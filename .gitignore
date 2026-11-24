@@ -32,6 +32,7 @@ yarn-error.log*
 
 # env files (can opt-in for committing if needed)
 .env*
+!.env.example
 
 # vercel
 .vercel
@@ -39,3 +40,44 @@ yarn-error.log*
 # typescript
 *.tsbuildinfo
 next-env.d.ts
+
+# --- Alfa Delta Travels (Milestone 9.3 finalization) ---
+# Local review evidence, recordings and screenshots (never published)
+review/
+*.mp4
+*.webm
+*.mov
+Screen Recording*
+
+# Browser automation output
+.playwright-mcp/
+playwright-report/
+test-results/
+blob-report/
+
+# Logs, temporary and backup files
+*.log
+*.tmp
+*.bak
+*.orig
+tmp/
+temp/
+
+# Sanity: local Studio build and exported draft data (unpublished content)
+.sanity/
+dist/
+*.ndjson
+*.tar.gz
+
+# Editor, agent and OS files
+.idea/
+.vscode/
+.claude/settings.local.json
+Thumbs.db
+desktop.ini
+
+# Superseded per-milestone working reports (history is in CHANGELOG.md)
+MILESTONE_*.md
+
+# Internal editorial/administrative notes (kept locally, never public)
+docs/internal/

@@ -3,15 +3,29 @@
   "version": "0.1.0",
   "private": true,
   "scripts": {
+    "predev": "node --no-warnings scripts/content-manifest.mts",
     "dev": "next dev",
+    "prebuild": "node --no-warnings scripts/content-manifest.mts",
     "build": "next build",
     "start": "next start",
-    "lint": "eslint"
+    "lint": "eslint",
+    "test": "node --no-warnings src/features/trekker/path.test.mts && node --no-warnings src/features/trekker/choreo.test.mts && node --no-warnings src/features/bird/bird.test.mts && node --no-warnings src/features/plan/validate.test.mts && node --no-warnings src/sanity/map.test.mts && node --no-warnings src/sanity/queries.test.mts && node --no-warnings src/sanity/guard.test.mts && node --no-warnings src/sanity/cutover.test.mts && node --no-warnings src/content/experiences.test.mts",
+    "typecheck": "tsc --noEmit"
   },
   "dependencies": {
+    "@gsap/react": "^2.1.2",
+    "@lottiefiles/dotlottie-web": "0.82.1",
+    "@portabletext/react": "^8.0.1",
+    "@sanity/client": "^8.17.0",
+    "@sanity/image-url": "^2.2.0",
+    "gsap": "^3.15.1",
     "next": "16.4.6",
+    "next-sanity": "^13.5.1",
     "react": "19.3.0",
-    "react-dom": "19.3.0"
+    "react-dom": "19.3.0",
+    "sanity": "^6.24.0",
+    "server-only": "^0.0.1",
+    "styled-components": "^6.6.0"
   },
   "devDependencies": {
     "@tailwindcss/turbopack": "4.3.3",
@@ -20,6 +34,7 @@
     "@types/react-dom": "^19",
     "eslint": "^9",
     "eslint-config-next": "16.4.6",
+    "groq-js": "^2.0.3",
     "tailwindcss": "4.3.3",
     "typescript": "^5"
   }

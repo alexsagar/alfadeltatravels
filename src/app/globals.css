@@ -1,26 +1,156 @@
 @import "tailwindcss";
 
-:root {
-  --background: #ffffff;
-  --foreground: #171717;
+/* Design tokens — see DESIGN.md. Single source of truth for colour/type.
+   Milestone 9.1: cool neutral system. night = charcoal/slate photographic
+   sections and header; cloud = cool white/mist light sections and text on
+   dark; ink = text on light; brand = restrained Alfa Delta red (CTAs, small
+   accents, focus). No warm cream, orange, gold or green. */
+@theme {
+  --color-night-950: #141c25; /* deep charcoal: dark sections, header */
+  --color-night-900: #1b2631; /* raised dark panel (Tours) */
+  --color-night-800: #263847; /* dark slate */
+  --color-night-600: #3e5566;
+  --color-cloud-50: #ffffff; /* text on dark, light surfaces */
+  --color-cloud-100: #f7f9fb; /* cool white: page and light sections */
+  --color-cloud-200: #e8eef2; /* mist gray: subtle tonal sections, rules */
+  --color-ink-900: #17212b; /* primary text */
+  --color-ink-700: #3a4754; /* body text */
+  --color-ink-500: #5d6b78; /* captions, muted (5.3:1 on cloud-100) */
+  --color-brand-500: #b92332; /* logo red: primary CTA, accents on light */
+  --color-brand-400: #a01d2b; /* CTA hover (darker, not brighter) */
+  --color-brand-300: #e8646f; /* red for small accents on dark (5:1 on night-950) */
+
+  --font-display: var(--font-manrope), "Helvetica Neue", Arial, sans-serif;
+  --font-sans: var(--font-dm-sans), "Helvetica Neue", Arial, sans-serif;
+
+  --text-display-xl: clamp(2.75rem, 6.6vw, 6.25rem);
+  --text-display-xl--line-height: 1;
+  --text-display-xl--letter-spacing: -0.035em;
+  --text-display-lg: clamp(2.125rem, 4.4vw, 3.875rem);
+  --text-display-lg--line-height: 1.04;
+  --text-display-lg--letter-spacing: -0.03em;
+  --text-display-md: clamp(1.75rem, 2.8vw, 2.5rem);
+  --text-display-md--line-height: 1.1;
+  --text-display-md--letter-spacing: -0.02em;
+
+  --ease-cinematic: cubic-bezier(0.22, 1, 0.36, 1);
 }
 
-@theme inline {
-  --color-background: var(--background);
-  --color-foreground: var(--foreground);
-  --font-sans: var(--font-geist-sans);
-  --font-mono: var(--font-geist-mono);
-}
-
-@media (prefers-color-scheme: dark) {
-  :root {
-    --background: #0a0a0a;
-    --foreground: #ededed;
-  }
+html {
+  color-scheme: light;
+  /* Matches the hero scrim, so no light frame shows before the first paint. */
+  background-color: var(--color-night-950);
 }
 
 body {
-  background: var(--background);
-  color: var(--foreground);
-  font-family: Arial, Helvetica, sans-serif;
+  background: var(--color-cloud-100);
+  color: var(--color-ink-900);
+  font-family: var(--font-sans);
+}
+
+::selection {
+  background: var(--color-brand-500);
+  color: var(--color-cloud-50);
+}
+
+:focus-visible {
+  outline: 2px solid var(--color-brand-300);
+  outline-offset: 3px;
+}
+
+@layer base {
+  /* Manrope has no italic: emphasis inside headings is a lighter weight, not
+     a synthesised slant. */
+  :where(h1, h2, h3, .font-display) em {
+    font-style: normal;
+    font-weight: 300;
+  }
+}
+
+@layer components {
+  /* Headings: Manrope, slightly tightened. Utilities (tracking-*, font-*) still override. */
+  .font-display {
+    letter-spacing: -0.015em;
+    font-weight: 600;
+  }
+  .eyebrow {
+    @apply font-display text-[11px] font-semibold tracking-[0.2em] uppercase;
+  }
+  /* Primary call to action: the one place the brand red is a fill. */
+  .btn-primary {
+    @apply inline-flex items-center gap-3 rounded-full bg-brand-500 px-8 py-3.5 font-display text-sm font-semibold tracking-[0.01em] text-cloud-50 transition-colors hover:bg-brand-400;
+  }
+  .container-x {
+    @apply mx-auto w-full max-w-[90rem] px-5 sm:px-8 lg:px-14;
+  }
+}
+
+@media (prefers-reduced-motion: no-preference) {
+  html {
+    scroll-behavior: smooth;
+  }
+
+  /* Subtle scroll reveal, CSS scroll-driven (no JS). Browsers without
+     animation-timeline simply show the content. */
+  @supports (animation-timeline: view()) {
+    .reveal {
+      animation: reveal linear both;
+      animation-timeline: view();
+      animation-range: entry 0% entry 60%;
+    }
+  }
+}
+
+@keyframes reveal {
+  from {
+    opacity: 0;
+    transform: translateY(28px);
+  }
+}
+
+/* Editorial image reveal: the photo uncovers upward as it enters. */
+@media (prefers-reduced-motion: no-preference) {
+  @supports (animation-timeline: view()) {
+    .reveal-mask {
+      animation: reveal-mask linear both;
+      animation-timeline: view();
+      animation-range: entry 10% cover 40%;
+    }
+  }
+}
+
+@keyframes reveal-mask {
+  from {
+    clip-path: inset(100% 0 0 0);
+  }
+  to {
+    clip-path: inset(0 0 0 0);
+  }
+}
+
+/* Internal-page hero copy settles in once on load (CSS only). */
+@media (prefers-reduced-motion: no-preference) {
+  .hero-rise {
+    animation: hero-rise 1.2s var(--ease-cinematic) both;
+  }
+  .hero-rise:nth-of-type(2) {
+    animation-delay: 0.08s;
+  }
+  .hero-rise:nth-of-type(3) {
+    animation-delay: 0.16s;
+  }
+}
+
+@keyframes hero-rise {
+  from {
+    opacity: 0;
+    transform: translateY(24px);
+  }
+}
+
+/* SectionNav: fade the tab row out at the right edge where it can scroll. */
+@media (max-width: 1023px) {
+  .section-nav {
+    mask-image: linear-gradient(to right, #000 calc(100% - 4.5rem), transparent calc(100% - 1.5rem));
+  }
 }
