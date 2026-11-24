@@ -41,6 +41,7 @@ const preparation = [
 
 export default async function TreksPage() {
   const [treks, destinations, stories] = await Promise.all([getTreks(), getDestinations(), getStories()]);
+  const guides = stories.filter((s) => s.category === "Guide").slice(0, 5);
   const regions = destinations.filter((d) => d.kind === "region");
   return (
     <>
@@ -147,24 +148,18 @@ export default async function TreksPage() {
         </div>
       </section>
 
-      {/* Guides */}
+      {/* Guides — only when published guides exist. */}
+      {guides.length > 0 && (
       <section aria-labelledby="guides-title" className="bg-cloud-100 pb-24 md:pb-36">
         <div className="container-x grid gap-12 md:grid-cols-[1fr_1.6fr] md:gap-20">
           <SectionHeading eyebrow="Travel guides" id="guides-title" title="Before you go" />
           <div className="md:pt-16">
             <ul className="divide-y divide-ink-900/10 border-y border-ink-900/10">
-              {stories
-                .filter((s) => s.category === "Guide")
-                .slice(0, 5)
-                .map((s) => (
+              {guides.map((s) => (
                   <li key={s.slug} className="reveal flex flex-wrap items-baseline justify-between gap-x-6 gap-y-1 py-5">
-                    {s.status === "published" ? (
-                      <Link href={`/stories/${s.slug}`} className="font-display text-2xl underline decoration-brand-500/50 underline-offset-4 hover:decoration-brand-500">
+                    <Link href={`/stories/${s.slug}`} className="font-display text-2xl underline decoration-brand-500/50 underline-offset-4 hover:decoration-brand-500">
                         {s.title}
                       </Link>
-                    ) : (
-                      <span className="font-display text-2xl">{s.title}</span>
-                    )}
                     <span className="eyebrow text-[11px] text-ink-500">Guide</span>
                   </li>
                 ))}
@@ -175,11 +170,12 @@ export default async function TreksPage() {
           </div>
         </div>
       </section>
+      )}
 
       <CtaBand
         photo={photos.mardi}
         title="A trek shaped around you"
-        text="Tell us the time you have, the season and the kind of trail you are after. We will come back with suggestions — no booking or payment is taken on this site."
+        text="Bring the time you have, the season and the kind of trail you are after to the planning page."
       />
     </>
   );

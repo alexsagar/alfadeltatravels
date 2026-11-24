@@ -2,7 +2,7 @@
 // (src/content/types.ts), so page templates never see Sanity structures.
 // Pure functions — no Next.js imports — so they are unit-tested directly.
 import type { Photo } from "../content/photos";
-import type { Destination, ExperienceCategory, ExperienceGuide, HomeContent, Offering, Seo, SiteSettings, Story, Tour, Trek } from "../content/types";
+import type { Destination, ExperienceCategory, ExperienceGuide, HomeContent, Offering, Seo, SiteSettings, Story, Tour, TourTheme, Trek } from "../content/types";
 
 type Raw = Record<string, any>; // eslint-disable-line @typescript-eslint/no-explicit-any
 
@@ -98,11 +98,11 @@ export function mapStory(s: Raw): Story<Photo> | null {
   return { slug: s.slug, title: s.title, category: s.category, summary: s.summary ?? "", status: "published", author: s.author, publishedAt: s.publishedAt, photo: mapPhoto(s.photo) ?? undefined, body: s.body, destinations: s.destinations ?? [], seo: mapSeo(s.seo) };
 }
 
-/** Blank settings fall back to the site name only — never invented details. */
-export function mapSettings(s: Raw | null | undefined, fallback: { name: string; description: string }): SiteSettings {
+/** Company settings. Name and description are required; everything else is shown only when filled in. */
+export function mapSettings(s: Raw | null | undefined): SiteSettings {
   return {
-    name: s?.name || fallback.name,
-    description: s?.description || fallback.description,
+    name: need(s?.name, "Company & contact → name"),
+    description: need(s?.description, "Company & contact → description"),
     footerTagline: s?.footerTagline || undefined,
     contact: { email: s?.contact?.email, phone: s?.contact?.phone, whatsapp: s?.contact?.whatsapp, address: s?.contact?.address, hours: s?.contact?.hours },
     enquiryEmail: s?.enquiryEmail ?? undefined,
@@ -163,28 +163,43 @@ export function mapExperienceGuide(e: Raw): ExperienceGuide<Photo> | null {
   };
 }
 
-/** Homepage: each blank CMS field keeps the built-in (local) value. */
-export function mapHome(h: Raw | null | undefined, local: HomeContent<Photo>): HomeContent<Photo> {
-  if (!h) return local;
-  const featured = (h.featuredTreks ?? [])
-    .map((t: Raw | null) => {
-      const photo = mapPhoto(t?.photo);
-      return t?.slug && t.title && photo ? { slug: t.slug, title: t.title, region: t.region ?? "", photo, highPoint: t.highPoint ?? undefined, href: t.hasGuide ? `/treks/${t.slug}` : undefined } : null;
-    })
-    .filter((t: unknown) => t !== null);
-  const text = (k: keyof HomeContent) => (typeof h[k] === "string" && h[k].trim() ? h[k] : local[k]) as string;
+/** Required CMS content that is missing fails loudly (build error) instead of rendering blank or stale copy. */
+export class MissingContentError extends Error {}
+const need = <T,>(value: T | null | undefined | "", what: string): T => {
+  if (value == null || (typeof value === "string" && !value.trim())) throw new MissingContentError(`Sanity: required content missing: ${what}. Fill it in Studio and publish.`);
+  return value as T;
+};
+
+/** Homepage singleton. Text and photos are required; card lists may be empty (their section then shows no cards). */
+export function mapHome(h: Raw | null | undefined): HomeContent<Photo> {
+  need(h, "Homepage document (homePage)");
+  const text = (k: keyof HomeContent) => need(h![k] as string, `Homepage → ${k}`);
+  const cards = <T,>(list: Raw[] | null | undefined, f: (x: Raw, photo: Photo) => T | null) => compact((list ?? []).map((x) => { const p = mapPhoto(x?.photo); return p ? f(x, p) : null; }));
   return {
     heroEyebrow: text("heroEyebrow"),
     heroSubline: text("heroSubline"),
     treksIntro: text("treksIntro"),
-    featuredTreks: featured.length ? featured : local.featuredTreks,
+    featuredTreks: compact(
+      (h!.featuredTreks ?? []).map((f: Raw) => {
+        const t = f?.trek;
+        const photo = mapPhoto(f?.card?.photo) ?? mapPhoto(t?.photo);
+        return t?.slug && photo ? { slug: t.slug, title: f.card?.title || t.title, region: t.region ?? "", photo, highPoint: t.highPoint ?? undefined, href: t.hasGuide ? `/treks/${t.slug}` : undefined } : null;
+      }),
+    ),
     beyondTitle: text("beyondTitle"),
     beyondIntro: text("beyondIntro"),
-    beyondPhoto: mapPhoto(h.beyondPhoto) ?? local.beyondPhoto,
+    beyondPhoto: need(mapPhoto(h!.beyondPhoto), "Homepage → beyondPhoto"),
     toursTitle: text("toursTitle"),
     toursIntro: text("toursIntro"),
+    tourCards: cards(h!.tourCards, (x, photo) => (x.title && x.theme ? { title: x.title, theme: x.theme, photo } : null)),
+    regions: cards(h!.regions, (x, photo) => (x.title && x.note ? { title: x.title, note: x.note, photo } : null)),
     closingTitle: text("closingTitle"),
     closingText: text("closingText"),
-    closingPhoto: mapPhoto(h.closingPhoto) ?? local.closingPhoto,
+    closingPhoto: need(mapPhoto(h!.closingPhoto), "Homepage → closingPhoto"),
   };
+}
+
+export function mapTourTheme(t: Raw): TourTheme<Photo> | null {
+  const photo = mapPhoto(t.photo);
+  return t.slug && t.title && t.text && photo ? { slug: t.slug, title: t.title, text: t.text, photo, places: slugs(t.places) } : null;
 }

@@ -206,6 +206,7 @@ export const experience = defineType({
         defineField({ name: "bestTime", title: "Best time to go", type: "text", rows: 4, validation: (r) => r.required() }),
         defineField({ name: "preparation", type: "array", of: [{ type: "titledText" }] }),
         defineField({ name: "safety", title: "Safety and responsible travel", type: "array", of: [{ type: "titledText" }] }),
+        defineField({ name: "destinations", title: "Destinations on this page", type: "array", of: [{ type: "reference", to: [{ type: "destination" }], weak: true }] }),
         defineField({ name: "related", title: "Related experiences", type: "array", of: [{ type: "reference", to: [{ type: "experience" }], weak: true }] }),
         defineField({ name: "faqs", title: "FAQs", type: "array", of: [{ type: "faq" }] }),
         defineField({ name: "sources", type: "array", of: [{ type: "sourceLink" }], description: "Where the facts come from.", validation: (r) => r.required().min(1) }),
@@ -225,7 +226,8 @@ export const experience = defineType({
 
 /**
  * Homepage (Milestone 9.3), singleton. Copy and picks only: layout, sections
- * and animation stay in code. Blank fields fall back to the built-in copy.
+ * and animation stay in code. The site reads only the published document;
+ * required fields must be filled before publishing.
  */
 export const homePage = defineType({
   name: "homePage",
@@ -235,12 +237,31 @@ export const homePage = defineType({
     defineField({ name: "heroEyebrow", title: "Hero eyebrow", type: "string" }),
     defineField({ name: "heroSubline", title: "Hero supporting line", type: "text", rows: 2, description: "The headline “Walk the roof of the world” is part of the cinematic sequence and stays in code." }),
     defineField({ name: "treksIntro", title: "Featured treks introduction", type: "text", rows: 2 }),
-    defineField({ name: "featuredTreks", title: "Featured treks", type: "array", of: [{ type: "reference", to: [{ type: "trek" }], weak: true }], validation: (r) => r.max(3) }),
+    defineField({
+      name: "featuredTreks",
+      title: "Featured treks",
+      type: "array",
+      validation: (r) => r.max(3),
+      of: [
+        defineArrayMember({
+          type: "object",
+          name: "featuredTrek",
+          fields: [
+            defineField({ name: "trek", type: "reference", to: [{ type: "trek" }], weak: true, validation: (r) => r.required() }),
+            defineField({ name: "title", title: "Card title", type: "string", description: "Optional. Defaults to the trek title." }),
+            defineField({ name: "photo", title: "Card photo", type: "photo", description: "Optional. Defaults to the trek photo." }),
+          ],
+          preview: { select: { title: "title", subtitle: "trek.title", media: "photo" } },
+        }),
+      ],
+    }),
     defineField({ name: "beyondTitle", title: "Experiences section title", type: "string" }),
     defineField({ name: "beyondIntro", title: "Experiences section introduction", type: "text", rows: 3 }),
     defineField({ name: "beyondPhoto", title: "Experiences section opening photo", type: "photo" }),
     defineField({ name: "toursTitle", title: "Tours section title", type: "string" }),
     defineField({ name: "toursIntro", title: "Tours section introduction", type: "text", rows: 2 }),
+    defineField({ name: "tourCards", title: "Tours section places", type: "array", of: [defineArrayMember({ type: "object", name: "tourCard", fields: [defineField({ name: "title", type: "string", validation: (r) => r.required() }), defineField({ name: "theme", type: "string", validation: (r) => r.required() }), defineField({ name: "photo", type: "photo", validation: (r) => r.required() })], preview: { select: { title: "title", subtitle: "theme", media: "photo" } } })] }),
+    defineField({ name: "regions", title: "Destinations section regions", type: "array", description: "The first region is shown large.", of: [defineArrayMember({ type: "object", name: "homeRegion", fields: [defineField({ name: "title", type: "string", validation: (r) => r.required() }), defineField({ name: "note", type: "string", validation: (r) => r.required() }), defineField({ name: "photo", type: "photo", validation: (r) => r.required() })], preview: { select: { title: "title", subtitle: "note", media: "photo" } } })] }),
     defineField({ name: "closingTitle", title: "Closing title", type: "string" }),
     defineField({ name: "closingText", title: "Closing text", type: "text", rows: 3, description: "Do not promise replies or bookings while the enquiry form is not connected." }),
     defineField({ name: "closingPhoto", title: "Closing photo", type: "photo" }),
@@ -280,14 +301,14 @@ export const story = defineType({
   preview: { select: { title: "title", subtitle: "category", media: "photo" } },
 });
 
-/** Singleton. Every field optional: blanks show as “to be supplied” on the site. */
+/** Singleton. Name and description are required; every other field is optional and simply not shown when blank. */
 export const siteSettings = defineType({
   name: "siteSettings",
   title: "Company & contact",
   type: "document",
   fields: [
-    defineField({ name: "name", title: "Company name", type: "string" }),
-    defineField({ name: "description", title: "Short description", type: "text", rows: 2, description: "Used as the default search description." }),
+    defineField({ name: "name", title: "Company name", type: "string", validation: (r) => r.required() }),
+    defineField({ name: "description", title: "Short description", type: "text", rows: 2, description: "Used as the default search description." , validation: (r) => r.required() }),
     defineField({ name: "footerTagline", title: "Footer tagline", type: "string" }),
     defineField({ name: "logo", type: "image" }),
     defineField({
@@ -327,4 +348,21 @@ export const siteSettings = defineType({
   preview: { prepare: () => ({ title: "Company & contact" }) },
 });
 
-export const documents = [homePage, trek, tour, experienceCategory, experience, destination, story, siteSettings];
+/** Tour theme: the "ways to travel" on /tours (editorial framing, not packages). Order = position. */
+export const tourTheme = defineType({
+  name: "tourTheme",
+  title: "Tour theme",
+  type: "document",
+  fields: [
+    defineField({ name: "title", type: "string", validation: (r) => r.required() }),
+    slug,
+    defineField({ name: "order", type: "number", validation: (r) => r.required() }),
+    defineField({ name: "text", type: "text", rows: 3, validation: (r) => r.required() }),
+    defineField({ name: "photo", type: "photo", validation: (r) => r.required() }),
+    defineField({ name: "places", title: "Places", type: "array", of: [{ type: "reference", to: [{ type: "destination" }], weak: true }] }),
+  ],
+  orderings: [{ title: "Order", name: "order", by: [{ field: "order", direction: "asc" }] }],
+  preview: { select: { title: "title", media: "photo" } },
+});
+
+export const documents = [homePage, trek, tour, tourTheme, experienceCategory, experience, destination, story, siteSettings];

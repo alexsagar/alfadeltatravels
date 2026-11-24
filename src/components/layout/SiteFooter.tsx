@@ -13,7 +13,6 @@ import { RidgelineScene } from "@/features/footer/RidgelineScene";
 import { getSettings } from "@/lib/content";
 import { Logo } from "./Logo";
 
-const fallbackTagline = "Journeys across Nepal, from Himalayan trails and white-water gorges to jungle lowlands and the old cities of the Kathmandu Valley.";
 
 const groups = [
   {
@@ -55,7 +54,7 @@ export async function SiteFooter() {
             <Link href="/" className="inline-block" aria-label="Alfa Delta Travels, home">
               <Logo className="h-16 w-auto sm:h-[4.5rem]" />
             </Link>
-            <p className="mt-6 max-w-sm text-[15px] leading-relaxed text-ink-700">{settings.footerTagline ?? fallbackTagline}</p>
+            {settings.footerTagline && <p className="mt-6 max-w-sm text-[15px] leading-relaxed text-ink-700">{settings.footerTagline}</p>}
             {reach.length > 0 && (
               <ul aria-label="Contact and social" className="mt-6 flex flex-wrap gap-x-6 gap-y-2 font-display text-sm font-medium">
                 {reach.map((r) => (

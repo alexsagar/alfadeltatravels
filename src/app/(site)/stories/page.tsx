@@ -17,6 +17,7 @@ export const metadata = pageMetadata({
 // locally only planned titles exist, shown without links.
 export default async function StoriesPage() {
   const stories = await getStories();
+  // No stories published: the list section is omitted; the hero and CTA remain.
   const published = stories.some((s) => s.status === "published");
   const [lead, ...rest] = stories;
   const label = (s: (typeof stories)[number]) => s.status === "published" && s.publishedAt ? `${s.category} · ${s.publishedAt}` : s.category;
@@ -42,6 +43,8 @@ export default async function StoriesPage() {
         intro="Practical guidance on altitude, permits, seasons and preparation for trekking in Nepal."
       />
 
+      {lead && (
+
       <section aria-labelledby="list-title" className="bg-cloud-100 py-24 md:py-36">
         <div className="container-x">
           <SectionHeading eyebrow={published ? "Latest" : "Guides"} id="list-title" title={published ? "Stories & guides" : "Planning topics"} />
@@ -65,6 +68,7 @@ export default async function StoriesPage() {
           </ul>
         </div>
       </section>
+      )}
 
       <CtaBand photo={photos.namche} title="Have a question before you go?" text="Seasons, permits, altitude or preparation: share your questions when you plan your trip." />
     </>

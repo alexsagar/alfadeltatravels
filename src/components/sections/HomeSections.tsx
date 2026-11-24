@@ -6,7 +6,6 @@ import Link from "next/link";
 import { ArrowLink, PhotoCard, SectionHeading } from "@/components/ui/editorial";
 import { photos } from "@/content/photos";
 import type { ExperienceCategory, HomeContent, Photo } from "@/content/types";
-import { regions, tours } from "@/content/site";
 
 /**
  * First section after the cinematic stage. It is pulled up over the last
@@ -125,7 +124,7 @@ export function BeyondMountains({ title, intro, photo, categories }: { title: st
  * a tall Boudhanath photo drifts against the scroll for depth.
  * Hands over to Destinations via PhotoBridge.
  */
-export function Tours({ title, intro }: { title: string; intro: string }) {
+export function Tours({ title, intro, cards }: { title: string; intro: string; cards: HomeContent<Photo>["tourCards"] }) {
   return (
     <section
       id="tours"
@@ -152,8 +151,8 @@ export function Tours({ title, intro }: { title: string; intro: string }) {
           </figure>
         </div>
         <ul className="divide-y divide-cloud-50/15 border-y border-cloud-50/15 md:self-end">
-          {tours.map((t) => {
-            const photo = photos[t.photo];
+          {cards.map((t) => {
+            const photo = t.photo;
             return (
               <li key={t.title} className="reveal grid grid-cols-[5.5rem_1fr] items-center gap-5 py-6 sm:grid-cols-[8rem_1fr] sm:gap-8">
                 <div className="relative aspect-[4/3] overflow-hidden bg-night-950">
@@ -173,8 +172,9 @@ export function Tours({ title, intro }: { title: string; intro: string }) {
   );
 }
 
-export function Destinations() {
+export function Destinations({ regions }: { regions: HomeContent<Photo>["regions"] }) {
   const [lead, ...rest] = regions;
+  if (!lead) return null;
   return (
     <section id="destinations" aria-labelledby="destinations-title" className="relative z-10 -mt-[60svh] bg-cloud-100 py-28 shadow-[0_-24px_48px_rgb(10_15_22/0.18)] md:py-40 motion-reduce:mt-0">
       <div className="container-x">
@@ -186,7 +186,7 @@ export function Destinations() {
         </div>
         <div className="mt-16 grid gap-x-8 gap-y-14 md:grid-cols-12">
           <figure className="group md:col-span-7">
-            <div className="reveal-mask"><PhotoCard photo={photos[lead.photo]} ratio="aspect-[4/3]" sizes="(min-width: 768px) 55vw, 100vw" /></div>
+            <div className="reveal-mask"><PhotoCard photo={lead.photo} ratio="aspect-[4/3]" sizes="(min-width: 768px) 55vw, 100vw" /></div>
             <figcaption className="reveal mt-5">
               <h3 className="font-display text-4xl">{lead.title}</h3>
               <p className="mt-2 max-w-sm text-sm text-ink-500">{lead.note}</p>
@@ -195,7 +195,7 @@ export function Destinations() {
           <div className="grid gap-14 md:col-span-5 md:pt-24">
             {rest.map((r) => (
               <figure key={r.title} className="reveal group">
-                <PhotoCard photo={photos[r.photo]} ratio="aspect-[3/2]" sizes="(min-width: 768px) 38vw, 100vw" />
+                <PhotoCard photo={r.photo} ratio="aspect-[3/2]" sizes="(min-width: 768px) 38vw, 100vw" />
                 <figcaption className="mt-5">
                   <h3 className="font-display text-3xl">{r.title}</h3>
                   <p className="mt-2 max-w-sm text-sm text-ink-500">{r.note}</p>

@@ -12,6 +12,7 @@ export const structure: StructureResolver = (S) =>
       S.documentTypeListItem("trek").title("Treks"),
       S.documentTypeListItem("experienceCategory").title("Experience categories"),
       S.documentTypeListItem("experience").title("Experiences"),
+      S.documentTypeListItem("tourTheme").title("Tour themes"),
       S.documentTypeListItem("tour").title("Tours"),
       S.documentTypeListItem("destination").title("Destinations"),
       S.documentTypeListItem("story").title("Stories & guides"),

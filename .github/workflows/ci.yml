@@ -1,7 +1,8 @@
 # Automated verification for every push and pull request on the three
 # long-lived branches. Read-only: no secrets, no Sanity credentials, no
-# deployment. Without NEXT_PUBLIC_SANITY_PROJECT_ID the site builds from its
-# local content (src/content), the documented safe path (SANITY_CUTOVER unset).
+# deployment. Sanity is the only content source, so the build reads the
+# published documents of the public `development` dataset anonymously. Only
+# public identifiers are set here; never point CI at `production`.
 name: CI
 
 on:
@@ -22,6 +23,9 @@ jobs:
     name: Lint, typecheck, test, build
     runs-on: ubuntu-latest
     timeout-minutes: 20
+    env:
+      NEXT_PUBLIC_SANITY_PROJECT_ID: 4qnp14bk
+      NEXT_PUBLIC_SANITY_DATASET: development
     steps:
       - uses: actions/checkout@v7
 

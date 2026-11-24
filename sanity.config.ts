@@ -16,11 +16,11 @@ export default defineConfig({
   dataset,
   schema: {
     types: schemaTypes,
-    // The settings singleton cannot be created twice or deleted.
-    templates: (t) => t.filter(({ schemaType }) => schemaType !== "siteSettings"),
+    // The settings and homepage singletons cannot be created twice, deleted or unpublished.
+    templates: (t) => t.filter(({ schemaType }) => schemaType !== "siteSettings" && schemaType !== "homePage"),
   },
   document: {
-    actions: (actions, { schemaType }) => (schemaType === "siteSettings" ? actions.filter(({ action }) => action !== "delete" && action !== "duplicate" && action !== "unpublish") : actions),
+    actions: (actions, { schemaType }) => (schemaType === "siteSettings" || schemaType === "homePage" ? actions.filter(({ action }) => action !== "delete" && action !== "duplicate" && action !== "unpublish") : actions),
   },
   plugins: [structureTool({ structure })],
   // Pinned API version for Studio's own queries too.
