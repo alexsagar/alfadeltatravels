@@ -89,6 +89,7 @@ body {
   .footer-link:hover,
   .footer-link:focus-visible {
     background-size: 100% 1px;
+    color: var(--color-brand-500);
   }
   .container-x {
     @apply mx-auto w-full max-w-[90rem] px-5 sm:px-8 lg:px-14;
@@ -163,12 +164,6 @@ body {
   .section-nav {
     mask-image: linear-gradient(to right, #000 calc(100% - 4.5rem), transparent calc(100% - 1.5rem));
   }
-}
-
-/* Footer invitation band: hidden on pages that already end with their own
-   planning CTA (marked data-page-cta), so two CTAs never follow each other. */
-body:has([data-page-cta]) .footer-invite {
-  display: none;
 }
 
 @media (prefers-reduced-motion: reduce) {

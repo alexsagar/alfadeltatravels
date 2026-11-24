@@ -9,7 +9,7 @@
     "build": "next build",
     "start": "next start",
     "lint": "eslint",
-    "test": "node --no-warnings src/features/trekker/path.test.mts && node --no-warnings src/features/trekker/choreo.test.mts && node --no-warnings src/features/bird/bird.test.mts && node --no-warnings src/features/plan/validate.test.mts && node --no-warnings src/sanity/map.test.mts && node --no-warnings src/sanity/queries.test.mts && node --no-warnings src/sanity/guard.test.mts && node --no-warnings src/sanity/cutover.test.mts && node --no-warnings src/content/experiences.test.mts",
+    "test": "node --no-warnings src/features/trekker/path.test.mts && node --no-warnings src/features/trekker/choreo.test.mts && node --no-warnings src/features/bird/bird.test.mts && node --no-warnings src/features/plan/validate.test.mts && node --no-warnings src/sanity/map.test.mts && node --no-warnings src/sanity/queries.test.mts && node --no-warnings src/sanity/guard.test.mts && node --no-warnings src/sanity/cutover.test.mts && node --no-warnings src/content/experiences.test.mts && node --no-warnings src/features/footer/ridgeline.test.mts",
     "typecheck": "tsc --noEmit"
   },
   "dependencies": {
