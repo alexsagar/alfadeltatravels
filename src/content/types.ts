@@ -239,6 +239,8 @@ export type HomeContent<P = PhotoKey> = {
   beyondPhoto: P;
   toursTitle: string;
   toursIntro: string;
+  tourCards: { title: string; theme: string; photo: P }[];
+  regions: { title: string; note: string; photo: P }[];
   closingTitle: string;
   closingText: string;
   closingPhoto: P;

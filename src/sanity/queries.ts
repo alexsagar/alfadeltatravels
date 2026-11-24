@@ -44,7 +44,6 @@ export const settingsQuery = `*[_id == "siteSettings"][0] {
  * page will actually render.
  */
 export const manifestQuery = `{
-  "counts": { "treks": count(*[_type == "trek" && ${published}]), "destinations": count(*[_type == "destination" && ${published}]), "stories": count(*[_type == "story" && ${published}]), "experiences": count(*[_type == "experience" && ${published}]) },
   "treks": *[_type == "trek" && ${published} && defined(guide.hero.asset) && count(guide.route) >= 2].slug.current,
   "tours": *[_type == "tour" && ${published} && defined(photo.asset)].slug.current,
   "destinations": *[_type == "destination" && ${published} && count(body) > 0].slug.current,
@@ -64,7 +63,7 @@ export const experienceCategoriesQuery = `*[_type == "experienceCategory" && ${p
 
 /** `count` decides the source: any published experience switches catalogue and pages to the CMS (same rule as the manifest). */
 export const experienceGuidesQuery = `{ "count": count(*[_type == "experience" && ${published}]), "items": *[_type == "experience" && ${published} && defined(guide.heading)] | order(title asc) {
-  "slug": slug.current, title, "category": category->slug.current, "places": destinations[]->slug.current, seo,
+  "slug": slug.current, title, "category": category->slug.current, "places": guide.destinations[]->slug.current, seo,
   guide { pageTitle, eyebrow, heading, emphasis, intro, place, overviewTitle, overview, facts, bestTime, preparation, safety, faqs, sources,
     highlights, hero ${photo}, ctaPhoto ${photo}, story[]{ title, text, layout, photo ${photo} }, "related": related[]->slug.current }
 } }`;
@@ -72,5 +71,11 @@ export const experienceGuidesQuery = `{ "count": count(*[_type == "experience" &
 export const homeQuery = `*[_id == "homePage"][0] {
   heroEyebrow, heroSubline, treksIntro, beyondTitle, beyondIntro, toursTitle, toursIntro, closingTitle, closingText,
   beyondPhoto ${photo}, closingPhoto ${photo},
-  "featuredTreks": featuredTreks[]->{ "slug": slug.current, title, "region": region->title, highPoint, photo ${photo}, "hasGuide": defined(guide.hero.asset) && count(guide.route) >= 2 }
+  "featuredTreks": featuredTreks[]{ "card": { title, "photo": photo ${photo} }, "trek": trek->{ "slug": slug.current, title, "region": region->title, highPoint, photo ${photo}, "hasGuide": defined(guide.hero.asset) && count(guide.route) >= 2 } },
+  tourCards[]{ title, theme, photo ${photo} }, regions[]{ title, note, photo ${photo} }
+}`;
+
+/** Tour themes on /tours, in editor order. */
+export const tourThemesQuery = `*[_type == "tourTheme" && ${published}] | order(order asc) {
+  "slug": slug.current, title, text, photo ${photo}, "places": places[]->slug.current
 }`;

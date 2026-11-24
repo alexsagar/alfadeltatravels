@@ -1,15 +1,26 @@
 {
-  "source": "sanity",
+  "dataset": "development",
   "treks": [
-    "everest-base-camp-trek"
+    "annapurna-base-camp-trek",
+    "everest-base-camp-trek",
+    "langtang-valley-trek",
+    "mardi-himal-trek"
   ],
   "tours": [],
-  "destinations": [],
+  "destinations": [
+    "annapurna",
+    "chitwan",
+    "kathmandu",
+    "khumbu",
+    "langtang",
+    "lumbini",
+    "pokhara"
+  ],
   "stories": [],
   "experiences": [
-    "paragliding",
-    "white-water-rafting",
     "chitwan-wildlife-safari",
-    "lumbini-spiritual-heritage"
+    "lumbini-spiritual-heritage",
+    "paragliding",
+    "white-water-rafting"
   ]
 }

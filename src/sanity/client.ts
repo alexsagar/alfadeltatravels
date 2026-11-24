@@ -1,12 +1,13 @@
 import { createClient } from "@sanity/client";
-import { apiVersion, dataset, isSanityConfigured, projectId } from "./env";
+import { apiVersion, dataset, projectId } from "./env";
 
 /**
  * Public read client. `perspective: "published"` means draft documents
  * (ids under `drafts.`) are never returned — the API enforces it, not our
- * queries. No token is configured, so the dataset must be public-read; a
- * private dataset would need a server-only read token added here.
+ * queries. No token is configured, so the dataset must be public-read and
+ * document ids must not contain "." (dotted ids are private sub-paths).
+ *
+ * useCdn: false — content is read only at build time, and the API CDN can
+ * lag a fresh publish, so a rebuild right after publishing could miss it.
  */
-export const sanityClient = isSanityConfigured
-  ? createClient({ projectId, dataset, apiVersion, useCdn: true, perspective: "published" })
-  : null;
+export const sanityClient = createClient({ projectId, dataset, apiVersion, useCdn: false, perspective: "published" });
