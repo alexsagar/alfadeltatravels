@@ -1,6 +1,6 @@
 // Homepage content sections that follow the cinematic opening (BirdJourney).
 // Server components; reveals are CSS scroll-driven (`.reveal`, globals.css),
-// so there is no extra JS. Copy marked [Placeholder] awaits the company.
+// so there is no extra JS.
 import Image from "next/image";
 import Link from "next/link";
 import { ArrowLink, PhotoCard, SectionHeading } from "@/components/ui/editorial";
@@ -27,7 +27,7 @@ export function FeaturedTreks({ intro, treks }: { intro: string; treks: HomeCont
         <ul className="mt-16 grid gap-x-8 gap-y-14 md:grid-cols-3">
           {treks.map((trek, i) => (
             <li key={trek.slug} className={`reveal group relative ${i === 1 ? "md:mt-16" : ""}`}>
-              <PhotoCard light photo={trek.photo} ratio="aspect-[4/5]" sizes="(min-width: 768px) 30vw, 100vw" />
+              <PhotoCard photo={trek.photo} ratio="aspect-[4/5]" sizes="(min-width: 768px) 30vw, 100vw" />
               <p className="eyebrow mt-6 text-brand-300">{trek.region}</p>
               <h3 className="mt-2 font-display text-3xl">
                 {trek.href ? (
@@ -77,7 +77,6 @@ export function BeyondMountains({ title, intro, photo, categories }: { title: st
           <div data-fx="window" className="relative aspect-[4/5] overflow-hidden bg-night-900 sm:aspect-[16/9] lg:aspect-[21/9]">
             <Image data-fx-img src={photo.src} alt={photo.alt} fill sizes="(min-width: 1440px) 1328px, 100vw" placeholder="blur" className="object-cover object-[50%_40%] will-change-transform" />
           </div>
-          <figcaption className="mt-2 text-xs text-cloud-100/55">Pictured: {photo.location}</figcaption>
         </figure>
         <div className="mt-14 grid gap-8 md:mt-20 md:grid-cols-2 md:gap-20">
           <SectionHeading light eyebrow="Experiences" id="beyond-title" title={title} />
@@ -96,7 +95,7 @@ export function BeyondMountains({ title, intro, photo, categories }: { title: st
             return (
               <li key={c.slug} className={`group relative ${l.item} ${i % 2 ? "max-md:ml-[10%]" : "max-md:mr-[10%]"}`}>
                 <div className="reveal-mask">
-                  <PhotoCard light photo={c.photo} ratio={l.ratio} sizes={l.sizes} />
+                  <PhotoCard photo={c.photo} ratio={l.ratio} sizes={l.sizes} />
                 </div>
                 <div className="reveal mt-5 flex gap-5">
                   <p aria-hidden className="font-display text-2xl text-brand-300/80">
@@ -150,7 +149,6 @@ export function Tours({ title, intro }: { title: string; intro: string }) {
             <div data-fx="parallax" className="relative aspect-[4/5] max-w-sm overflow-hidden bg-night-950">
               <Image data-fx-img src={photos.kathmandu.src} alt={photos.kathmandu.alt} fill sizes="24rem" placeholder="blur" className="object-cover will-change-transform" />
             </div>
-            <figcaption className="mt-2 text-xs text-cloud-100/55">Pictured: {photos.kathmandu.location}</figcaption>
           </figure>
         </div>
         <ul className="divide-y divide-cloud-50/15 border-y border-cloud-50/15 md:self-end">
@@ -164,7 +162,6 @@ export function Tours({ title, intro }: { title: string; intro: string }) {
                 <div>
                   <p className="eyebrow text-[11px] text-brand-300">{t.theme}</p>
                   <h3 className="mt-1 font-display text-3xl sm:text-display-md">{t.title}</h3>
-                  <p className="mt-1 text-xs text-cloud-100/50">Pictured: {photo.location}</p>
                 </div>
               </li>
             );
@@ -221,13 +218,11 @@ export function About() {
           <div data-fx="window" className="relative aspect-[4/5] overflow-hidden bg-night-900 sm:aspect-[16/9] lg:aspect-[21/9]">
             <Image data-fx-img src={photos.sarangkot.src} alt={photos.sarangkot.alt} fill sizes="(min-width: 1440px) 1328px, 100vw" placeholder="blur" className="object-cover object-[50%_40%] will-change-transform" />
           </div>
-          <figcaption className="mt-2 text-xs text-ink-500">Pictured: {photos.sarangkot.location}</figcaption>
         </figure>
         <div className="mt-16 grid gap-8 md:mt-24 md:grid-cols-2 md:gap-20">
           <SectionHeading eyebrow="About us" id="about-title" title="Alfa Delta Travels" />
-          {/* Awaiting approved company copy. No invented facts or statistics. */}
           <p className="reveal max-w-md leading-relaxed text-ink-700 md:pt-12">
-            [Placeholder] Company story, team and approach to be supplied by Alfa Delta Travels.
+            Treks, river and sky adventures and cultural journeys across Nepal, from the Khumbu and the Annapurna Sanctuary to the old cities of the Kathmandu Valley and the Chitwan lowlands.
             <span className="mt-6 block">
               <ArrowLink href="/about">About Alfa Delta Travels</ArrowLink>
             </span>
@@ -252,13 +247,10 @@ export function Stories() {
       <div className="container-x">
         <div data-fx="rule" className="h-px origin-left bg-ink-500/30" />
         <div className="mt-20 grid gap-10 md:mt-28 md:grid-cols-[1fr_1.6fr] md:gap-20">
-          <SectionHeading eyebrow="Traveler stories" id="stories-title" title="In their words" />
-          {/* Real, consented testimonials only — none are invented here. */}
-          <blockquote className="reveal border-l border-brand-500/60 pl-8 md:mt-14">
-            <p className="font-display text-3xl leading-snug text-ink-500 italic md:text-4xl">
-              [Placeholder] Verified traveler testimonials will appear here.
-            </p>
-          </blockquote>
+          <SectionHeading eyebrow="Stories &amp; guides" id="stories-title" title="Notes from the trail" />
+          <p className="reveal max-w-md leading-relaxed text-ink-700 md:mt-14">
+            Practical notes on altitude, permits, seasons and preparation for walking in Nepal.
+          </p>
           <div className="reveal md:col-start-2">
             <ArrowLink href="/stories">Stories &amp; guides</ArrowLink>
           </div>
@@ -299,7 +291,6 @@ export function PlanCta({ title, text, photo }: { title: string; text: string; p
               Start planning
             </Link>
           </div>
-          <p className="mt-6 text-xs text-cloud-100/70">Pictured: {photo.location}</p>
         </div>
       </div>
     </section>

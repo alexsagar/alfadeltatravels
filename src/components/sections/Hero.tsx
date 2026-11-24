@@ -53,9 +53,6 @@ export function Hero() {
         </p>
       </div>
 
-      <p className="absolute bottom-5 left-5 z-10 text-xs sm:left-8 lg:left-14 tracking-wide text-cloud-100/60 sm:right-8">
-        Pictured: {photos.hero.location}
-      </p>
     </section>
   );
 }

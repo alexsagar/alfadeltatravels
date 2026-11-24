@@ -2,7 +2,7 @@ import Image from "next/image";
 import Link from "next/link";
 import { CtaBand } from "@/components/page/CtaBand";
 import { PageHero } from "@/components/page/PageHero";
-import { Pending, SectionHeading } from "@/components/ui/editorial";
+import { SectionHeading } from "@/components/ui/editorial";
 import { getDestinations, getTourThemes, getTours } from "@/lib/content";
 import { photos } from "@/content/photos";
 import { pageMetadata } from "@/lib/seo";
@@ -34,11 +34,6 @@ export default async function ToursPage() {
       <section aria-labelledby="themes-title" className="bg-cloud-100 py-24 md:py-36">
         <div className="container-x">
           <SectionHeading eyebrow="Ways to travel" id="themes-title" title="Four kinds of journey" />
-          {tours.length === 0 && (
-            <div className="mt-10 max-w-xl">
-              <Pending>Tour programmes, durations and prices are being prepared and are not shown until confirmed.</Pending>
-            </div>
-          )}
           <ul className="mt-20 space-y-24 md:space-y-32">
             {tourThemes.map((t, i) => {
               const p = t.photo;
@@ -48,7 +43,6 @@ export default async function ToursPage() {
                     <div data-fx="parallax" className="relative aspect-[5/4] overflow-hidden bg-night-900">
                       <Image data-fx-img src={p.src} alt={p.alt} fill sizes="(min-width: 768px) 50vw, 100vw" placeholder="blur" className="object-cover will-change-transform" />
                     </div>
-                    <figcaption className="mt-2 text-xs text-ink-500">Pictured: {p.location}</figcaption>
                   </figure>
                   <div className={`reveal pb-8 md:col-span-5 ${i % 2 ? "md:order-1 md:col-start-1" : "md:col-start-8"}`}>
                     <p className="font-display text-5xl text-brand-500/80">{String(i + 1).padStart(2, "0")}</p>
@@ -89,7 +83,6 @@ export default async function ToursPage() {
                     <div className="relative aspect-[4/3] overflow-hidden bg-night-900">
                       <Image src={t.photo.src} alt={t.photo.alt} fill sizes="(min-width: 768px) 30vw, 100vw" placeholder={t.photo.src.blurDataURL ? "blur" : "empty"} className="object-cover transition-transform duration-1000 ease-cinematic group-hover:scale-[1.04]" />
                     </div>
-                    <p className="mt-2 text-xs text-cloud-100/70">Pictured: {t.photo.location}</p>
                     <p className="eyebrow mt-5 text-brand-300">{t.category}</p>
                     <h3 className="mt-2 font-display text-3xl">{t.title}</h3>
                     <p className="mt-3 text-sm leading-relaxed text-cloud-100/75">{t.summary}</p>
@@ -101,7 +94,7 @@ export default async function ToursPage() {
         </section>
       )}
 
-      <CtaBand photo={photos.chitwan} title="A journey at your own pace" text="Bring your interests and dates to the planning page. Nothing is booked or charged through this site." />
+      <CtaBand photo={photos.chitwan} title="A journey at your own pace" text="Heritage cities, lakes and lowland jungle, combined in the order and at the pace that suits you." />
     </>
   );
 }

@@ -145,9 +145,6 @@ export function ExperiencesView({ categories, destinations }: { categories: Expe
                         className="object-cover will-change-transform"
                       />
                     </div>
-                    <figcaption className="mt-2 text-xs text-ink-500">
-                      Pictured: {c.photo.location}
-                    </figcaption>
                   </figure>
                   <div
                     className={`md:col-span-6 ${flip ? "md:order-1 md:col-start-1" : "md:col-start-7"} md:self-center`}
@@ -308,7 +305,7 @@ export function ExperiencesView({ categories, destinations }: { categories: Expe
         dark
         photo={photos.rafting}
         title="Build a journey around what you love"
-        text="Note the experiences that interest you and when you hope to travel, and take them to the planning page. Nothing is booked or charged through this site."
+        text="Note the experiences that interest you and when you hope to travel, then bring them to the planning page."
       />
     </>
   );

@@ -34,7 +34,6 @@ export function PhotoBridge({ photo, className = "" }: { photo: Photo; className
           const tl = gsap.timeline({ defaults: { ease: "none" }, scrollTrigger: { trigger: root.current, start: "top 85%", end: "top top", scrub: 0.6 } });
           tl.fromTo(".pb-frame", { clipPath: closed }, { clipPath: OPEN }, 0);
           tl.fromTo(".pb-img", { scale: 1.18 }, { scale: 1 }, 0);
-          tl.fromTo(".pb-caption", { autoAlpha: 0 }, { autoAlpha: 1, duration: 0.3 }, 0.7);
         },
       );
     },
@@ -48,9 +47,6 @@ export function PhotoBridge({ photo, className = "" }: { photo: Photo; className
         style={{ clipPath: CLOSED.wide }}
       >
         <Image src={photo.src} alt="" fill sizes="100vw" placeholder="blur" className="pb-img object-cover will-change-transform max-md:object-[26%_62%]" />
-        <p className="pb-caption absolute bottom-5 left-5 text-xs text-cloud-50/80 [text-shadow:0_1px_8px_rgb(0_0_0/0.5)] sm:left-8 lg:left-14">
-          Pictured: {photo.location}
-        </p>
       </div>
     </div>
   );

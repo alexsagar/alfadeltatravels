@@ -47,7 +47,6 @@ export default async function DestinationsPage() {
                     <div data-fx="window" className="relative aspect-[4/3] overflow-hidden bg-night-900">
                       <Image data-fx-img src={p.src} alt={p.alt} fill sizes="(min-width: 768px) 58vw, 100vw" placeholder="blur" className="object-cover will-change-transform" />
                     </div>
-                    <figcaption className="mt-2 text-xs text-ink-500">Pictured: {p.location}</figcaption>
                   </figure>
                   <div className={`reveal md:col-span-5 ${i % 2 ? "md:order-1" : ""}`}>
                     <p className="eyebrow text-brand-500">Region</p>
@@ -74,7 +73,7 @@ export default async function DestinationsPage() {
                               ) : (
                                 <span>{t.title}</span>
                               )}
-                              <span className="text-xs text-ink-500">{t.guide ? "Route guide" : "Guide in preparation"}</span>
+                              {t.guide && <span className="text-xs text-ink-500">Route guide</span>}
                             </li>
                           );
                         })}
@@ -100,7 +99,6 @@ export default async function DestinationsPage() {
                   <div className="relative aspect-[4/5] overflow-hidden bg-night-900">
                     <Image src={p.src} alt={p.alt} fill sizes="(min-width: 1024px) 22vw, (min-width: 640px) 45vw, 100vw" placeholder="blur" className="object-cover" />
                   </div>
-                  <p className="mt-2 text-xs text-cloud-100/70">Pictured: {p.location}</p>
                   <h3 className="mt-5 font-display text-3xl">
                     {d.body ? (
                       <Link href={`/destinations/${d.slug}`} className="hover:text-brand-300">

@@ -45,7 +45,6 @@ export function PageHero({
         <h1 className="hero-rise max-w-5xl font-display text-display-xl font-medium [text-shadow:0_2px_30px_rgb(10_15_22/0.45)]">{title}</h1>
         {intro && <p className="hero-rise mt-6 max-w-xl text-base leading-relaxed text-cloud-50">{intro}</p>}
         {children}
-        <p className="mt-8 text-xs text-cloud-100/85">Pictured: {photo.location}</p>
       </div>
       {/* Mounted with the page, not the (site) layout: the page segment
           hydrates after the layout, and GSAP must not style its data-fx

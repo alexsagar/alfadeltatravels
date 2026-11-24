@@ -219,7 +219,6 @@ export function BirdJourney({ eyebrow, subline }: { eyebrow: string; subline: st
             Walk the roof <em>of the world</em>
           </h1>
           <p className="mt-5 max-w-md text-sm leading-relaxed text-cloud-50">{subline}</p>
-          <p className="mt-2 text-xs text-cloud-100/75">Pictured: {photos.hero.location}</p>
         </div>
 
         {/* Scene 3: Discover Nepal — framed village that opens to full screen. */}
@@ -240,7 +239,6 @@ export function BirdJourney({ eyebrow, subline }: { eyebrow: string; subline: st
           <div className="bj-place container-x absolute inset-x-0 bottom-[12svh] text-cloud-50 [text-shadow:0_2px_18px_rgb(10_15_22/0.5)] max-md:bottom-[15svh] motion-reduce:bottom-[4svh] motion-reduce:text-ink-900 motion-reduce:[text-shadow:none]">
             <p className="eyebrow mb-3 text-brand-300 motion-reduce:text-brand-500">Annapurna region</p>
             <p className="font-display text-display-md">Ghandruk</p>
-            <p className="mt-2 text-xs text-cloud-100 motion-reduce:text-ink-700">Pictured: {photos.village.location}</p>
           </div>
         </div>
 

@@ -31,7 +31,7 @@ export function CtaBand({ photo, title, text, query, dark }: { photo?: Photo; ti
               Start planning
             </Link>
           </div>
-          {photo && <p className="mt-8 text-xs text-cloud-100/70">Pictured: {photo.location}</p>}
+          
         </div>
       </div>
     </section>
