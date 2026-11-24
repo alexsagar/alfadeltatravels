@@ -14,7 +14,7 @@ export const metadata = pageMetadata({
 
 
 export default async function ContactPage() {
-  // Values come from Site settings; blanks stay visibly "to be supplied".
+  // Values come from Site settings; unsupplied fields are omitted, never filled in.
   const { contact: c, registration } = await getSettings();
   const details = [
     { label: "Email", value: c.email },
@@ -22,8 +22,7 @@ export default async function ContactPage() {
     { label: "Office address", value: c.address },
     { label: "Office hours (Nepal time)", value: c.hours },
     { label: "Company registration", value: registration },
-  ];
-  const missing = details.some((d) => !d.value);
+  ].filter((d) => d.value);
   return (
     <>
       <PageHero
@@ -42,20 +41,22 @@ export default async function ContactPage() {
         <div className="container-x grid gap-14 md:grid-cols-[1fr_1.4fr] md:gap-24">
           <div>
             <SectionHeading eyebrow="Contact details" id="details-title" title="Where to find us">
-              {missing ? "Some contact details have not been supplied yet; blank fields will be filled with the company’s verified information." : "Reach Alfa Delta Travels directly using the details below."}
+              {details.length ? "Reach Alfa Delta Travels directly using the details below." : "Start by outlining your route, dates and group size on the planning page."}
             </SectionHeading>
             <div className="reveal mt-10">
-              <ArrowLink href={planHref}>Plan a journey instead</ArrowLink>
+              <ArrowLink href={planHref}>Plan your journey</ArrowLink>
             </div>
           </div>
+          {details.length > 0 && (
           <dl className="reveal self-start border-t border-ink-900/15 md:mt-16">
             {details.map((d) => (
               <div key={d.label} className="grid gap-2 border-b border-ink-900/15 py-6 sm:grid-cols-[14rem_1fr] sm:gap-6">
                 <dt className="eyebrow pt-1 text-[11px] text-ink-500">{d.label}</dt>
-                <dd className={`font-display text-2xl whitespace-pre-line ${d.value ? "text-ink-900" : "text-ink-500 italic"}`}>{d.value ?? "To be supplied by Alfa Delta Travels"}</dd>
+                <dd className="font-display text-2xl whitespace-pre-line text-ink-900">{d.value}</dd>
               </div>
             ))}
           </dl>
+          )}
         </div>
       </section>
     </>

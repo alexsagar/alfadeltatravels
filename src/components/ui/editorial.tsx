@@ -31,8 +31,8 @@ export function SectionHeading({
   );
 }
 
-/** Photo with its real-location caption. Pass `group` on a parent for the hover zoom. */
-export function PhotoCard({ photo, ratio, sizes, light, position }: { photo: Photo; ratio: string; sizes: string; light?: boolean; position?: string }) {
+/** Photo card (alt text only, no visible caption). Pass `group` on a parent for the hover zoom. */
+export function PhotoCard({ photo, ratio, sizes, position }: { photo: Photo; ratio: string; sizes: string; position?: string }) {
   return (
     <>
       <div className={`relative ${ratio} overflow-hidden bg-night-900`}>
@@ -45,7 +45,6 @@ export function PhotoCard({ photo, ratio, sizes, light, position }: { photo: Pho
           className={`object-cover transition-transform duration-1000 ease-cinematic group-hover:scale-[1.04] ${position ?? ""}`}
         />
       </div>
-      <p className={`mt-2 text-xs ${light ? "text-cloud-100/55" : "text-ink-500"}`}>Pictured: {photo.location}</p>
     </>
   );
 }
@@ -64,15 +63,5 @@ export function ArrowLink({ href, children, light }: { href: string; children: R
         →
       </span>
     </Link>
-  );
-}
-
-/** Clearly marked slot for information the company has not supplied yet. */
-export function Pending({ children, light }: { children: ReactNode; light?: boolean }) {
-  return (
-    <p className={`border-l-2 border-brand-500/70 py-1 pl-4 text-sm leading-relaxed ${light ? "text-cloud-100/75" : "text-ink-500"}`}>
-      <span className="eyebrow mr-2 text-[11px] text-brand-500">Awaiting company</span>
-      {children}
-    </p>
   );
 }

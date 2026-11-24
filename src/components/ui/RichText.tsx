@@ -3,8 +3,8 @@ import Image from "next/image";
 import type { RichText as RichTextValue } from "@/content/types";
 import { mapPhoto } from "@/sanity/map";
 
-// Portable Text in the site's editorial style. Inline photos keep their
-// "Pictured:" caption like every other image on the site.
+// Portable Text in the site's editorial style. Inline photos carry alt text
+// only; no visible caption, matching every other image on the site.
 const blocks = {
     normal: ({ children }) => <p className="leading-relaxed text-ink-700">{children}</p>,
     h2: ({ children }) => <h2 className="pt-6 font-display text-display-md">{children}</h2>,
@@ -30,7 +30,6 @@ const components: PortableTextComponents = {
           <div className="relative aspect-[3/2] overflow-hidden bg-night-900">
             <Image src={p.src} alt={p.alt} fill sizes="(min-width: 768px) 60vw, 100vw" className="object-cover" />
           </div>
-          <figcaption className="mt-2 text-xs text-ink-500">Pictured: {p.location}</figcaption>
         </figure>
       );
     },

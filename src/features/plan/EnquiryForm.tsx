@@ -165,7 +165,7 @@ export function EnquiryForm({ treks }: { treks: { slug: string; title: string }[
             Review enquiry
           </button>
           <p id="form-note" className="text-xs text-ink-500">
-            * Required. Online sending is not connected yet — nothing is transmitted from this page.
+            * Required. This form prepares a summary of your trip; it does not send anything.
           </p>
         </div>
       </form>
@@ -174,9 +174,9 @@ export function EnquiryForm({ treks }: { treks: { slug: string; title: string }[
         {summary && (
           <div className="border-l-2 border-brand-500 bg-cloud-50 p-8">
             <p className="eyebrow text-brand-500">Not sent</p>
-            <h3 className="mt-3 font-display text-3xl">Your enquiry is ready, but online sending isn&rsquo;t live yet</h3>
+            <h3 className="mt-3 font-display text-3xl">Your trip summary is ready</h3>
             <p className="mt-3 max-w-xl text-sm leading-relaxed text-ink-700">
-              Nothing has been transmitted. Contact details for Alfa Delta Travels are still being added to this site; until then please keep a copy of the summary below.
+              Nothing has been sent. Keep a copy of the summary below to share when you contact Alfa Delta Travels.
             </p>
             <dl className="mt-6 grid gap-x-8 gap-y-3 text-sm sm:grid-cols-[12rem_1fr]">
               {summary.map(([k, v]) => (

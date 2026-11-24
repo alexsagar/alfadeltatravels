@@ -77,7 +77,7 @@ export default async function TreksPage() {
       <section aria-labelledby="routes-title" className="bg-night-950 py-24 text-cloud-50 md:py-36">
         <div className="container-x">
           <SectionHeading light eyebrow="Featured routes" id="routes-title" title="Four classic treks">
-            Detailed route guides are being written one by one. Itineraries and prices will be published only when Alfa Delta Travels confirms them.
+            Four routes of different lengths and altitudes, from the moraine below Everest to the grassy ridges beneath Machapuchare.
           </SectionHeading>
           <ul className="mt-14 grid gap-x-8 gap-y-12 md:mt-16 md:grid-cols-2 md:gap-y-16 xl:grid-cols-4">
             {treks.map((t, i) => (
@@ -165,7 +165,7 @@ export default async function TreksPage() {
                     ) : (
                       <span className="font-display text-2xl">{s.title}</span>
                     )}
-                    <span className="eyebrow text-[11px] text-ink-500">{s.status === "published" ? "Guide" : "In preparation"}</span>
+                    <span className="eyebrow text-[11px] text-ink-500">Guide</span>
                   </li>
                 ))}
             </ul>
