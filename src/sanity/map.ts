@@ -103,6 +103,7 @@ export function mapSettings(s: Raw | null | undefined, fallback: { name: string;
   return {
     name: s?.name || fallback.name,
     description: s?.description || fallback.description,
+    footerTagline: s?.footerTagline || undefined,
     contact: { email: s?.contact?.email, phone: s?.contact?.phone, whatsapp: s?.contact?.whatsapp, address: s?.contact?.address, hours: s?.contact?.hours },
     enquiryEmail: s?.enquiryEmail ?? undefined,
     registration: s?.registration ?? undefined,

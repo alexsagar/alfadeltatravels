@@ -99,3 +99,44 @@ No invented statistics, prices, durations or testimonials.
 - General guide vs company package: "About this guide" note, "general, not a
   company itinerary" eyebrow on the route, "Company package · Not yet
   confirmed" block.
+
+## Footer (Milestone 9.4)
+
+The footer follows the supplied Ridgeline Dither Footer reference, adapted to the brand.
+
+**Layout**
+- Upper section: logo and brand line, with two link groups (Explore Nepal; Alfa Delta Travels, which includes Plan your journey).
+- Middle: a hairline copyright row with "Back to top".
+- Lower section: a full-width procedural mountain range, about 190–330 px tall.
+- Cool-white paper (`#F7F9FB`), so the transparent logo keeps its contrast, and fine vertical frame hairlines on wide screens.
+- Link hover: an underline that draws in from the left and turns brand red (`.footer-link`). No transition under reduced motion.
+
+**Content rules**
+- The brand line can be set in Sanity: Company & contact → Footer tagline.
+- Verified contact details and social links appear only once they are published in Sanity. No placeholders.
+- No CTA band and no large wordmark: each page's own closing CTA remains the only one.
+- Photo and animation credits are not shown in the footer. `/image-credits` and `ASSET_LICENSES.md` keep the records.
+
+**The range** (`features/footer/RidgelineScene.tsx`, with pure helpers in `ridgeline.ts`, unit-tested)
+- Six ridges built from ridged noise, printed in 8×8 ordered dither in glacier tones (`GLACIER_TONES`, from the paper colour to slate `#263847` and charcoal `#141C25`).
+- When the footer comes into view, the ridges develop back to front and the mist lifts. The mist then drifts slowly.
+- The pointer adds a gentle parallax and parts the mist around it.
+- The reference's altitude readout is left out because its numbers are invented, not real elevations.
+
+**Performance** (measured at 1440 px, as a share of one CPU core)
+
+| State | CPU |
+|---|---|
+| Footer off-screen | 0.6% |
+| Reveal (3.4 s) | about 37% |
+| Pointer moving | about 44% |
+| Idle drift | about 11% |
+| At rest (20 s after the last activity) | 0, last frame held |
+| Reduced motion | 0.6%, drawn once and static |
+
+How the cost is kept down:
+- Reveal and pointer motion are capped at about 30 fps; the idle drift runs at about 8 fps.
+- The mist is computed at quarter resolution, and the grain texture is precomputed once.
+- One dither cell is 2 CSS px (3 px below 640 px), whatever the screen's pixel density.
+- The loop stops when the footer is off-screen or the tab is hidden.
+- Before the first draw, the scene shows plain paper at a fixed CSS height, so there is no layout shift.
