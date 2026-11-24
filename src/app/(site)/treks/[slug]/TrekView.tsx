@@ -87,9 +87,9 @@ export function TrekView({
               <span className="eyebrow mr-2 text-[11px] text-night-800">
                 About this guide
               </span>
-              General information about the trek, compiled from the public
-              sources listed at the end. It is not an Alfa Delta Travels
-              itinerary; the company&rsquo;s own package has not been confirmed.
+              General information about the route, drawn from the public
+              sources listed at the end. It describes the trek itself, not a
+              fixed company itinerary.
             </p>
             <SectionHeading
               eyebrow="Overview"
@@ -164,9 +164,6 @@ export function TrekView({
                           className="object-cover will-change-transform"
                         />
                       </div>
-                      <figcaption className="mt-2 text-xs text-cloud-100/70">
-                        Pictured: {p.location}
-                      </figcaption>
                     </figure>
                   )}
                   <div
@@ -397,7 +394,7 @@ export function TrekView({
       <CtaBand
         photo={photos.tengboche}
         title={`Planning the ${trek.title.replace(/ Trek$/, "")} trek?`}
-        text="Note your dates, experience and preferred pace on the planning page. Nothing is booked or charged through this site."
+        text="Note your dates, trekking experience and preferred pace on the planning page."
         query={trek.slug}
       />
     </>

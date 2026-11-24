@@ -103,7 +103,7 @@ export default async function TourPage({ params }: PageProps<"/tours/[slug]">) {
           </div>
         </section>
       )}
-      <CtaBand photo={tour.gallery[0] ?? photos.pokhara} title="Shape this tour around you" text="Tell us your dates and interests. Nothing is booked or charged through this site." query={tour.slug} />
+      <CtaBand photo={tour.gallery[0] ?? photos.pokhara} title="Shape this tour around you" text="Bring your dates and interests to the planning page." query={tour.slug} />
     </>
   );
 }

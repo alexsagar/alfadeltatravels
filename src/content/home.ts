@@ -14,7 +14,7 @@ export const home: HomeContent = {
   ],
   beyondTitle: "Beyond the Mountains",
   beyondIntro:
-    "Nepal is more than a destination to climb. From Himalayan skies and rushing rivers to ancient cities, wild landscapes and peaceful sanctuaries, discover every side of Nepal.",
+    "Nepal is more than its mountains: open sky above Pokhara, rivers fed by Himalayan snow, ancient cities, lowland jungle and the quiet gardens of Lumbini.",
   beyondPhoto: "paragliding",
   toursTitle: "Journeys across Nepal",
   toursIntro: "Heritage cities, lakeside towns and lowland jungle: Nepal at a gentler pace than the trail.",

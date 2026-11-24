@@ -89,7 +89,6 @@ export function ExperienceView({
                     <div data-fx="window" className="relative aspect-[4/5] overflow-hidden bg-night-900 sm:aspect-[16/9] lg:aspect-[21/9]">
                       <Image data-fx-img src={s.photo.src} alt={s.photo.alt} fill sizes="(min-width: 1440px) 1328px, 100vw" placeholder="blur" className="object-cover will-change-transform" />
                     </div>
-                    <figcaption className="mt-2 text-xs text-ink-500">Pictured: {s.photo.location}</figcaption>
                   </figure>
                 )}
                 <div className="mt-12 grid gap-6 md:grid-cols-[1fr_1.4fr] md:gap-20">
@@ -109,7 +108,6 @@ export function ExperienceView({
                   <div data-fx="parallax" className="relative aspect-[4/3] overflow-hidden bg-night-900">
                     <Image data-fx-img src={s.photo.src} alt={s.photo.alt} fill sizes="(min-width: 768px) 58vw, 100vw" placeholder="blur" className="object-cover will-change-transform" />
                   </div>
-                  <figcaption className="mt-2 text-xs text-ink-500">Pictured: {s.photo.location}</figcaption>
                 </figure>
                 <div className={`reveal md:col-span-5 ${s.layout === "right" ? "md:order-1" : ""}`}>
                   <h2 id={slugId(s.title)} className="font-display text-display-md">
@@ -252,7 +250,7 @@ export function ExperienceView({
         </div>
       </section>
 
-      <CtaBand photo={g.ctaPhoto} title={`Plan your visit: ${g.title}`} text="Note your dates and the experiences you are interested in on the planning page. Nothing is booked or charged through this site." />
+      <CtaBand photo={g.ctaPhoto} title={`Plan your visit: ${g.title}`} text="Add your dates and any other experiences you have in mind on the planning page." />
     </>
   );
 }

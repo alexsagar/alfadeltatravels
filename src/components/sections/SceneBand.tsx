@@ -77,7 +77,6 @@ export function SceneBand({
           <h2 id={id} className="scene-reveal font-display text-display-md font-medium">
             {title}
           </h2>
-          <p className="scene-reveal mt-4 text-xs tracking-wide text-cloud-100/70">Pictured: {photo.location}</p>
         </div>
       </div>
 

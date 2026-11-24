@@ -1,6 +1,6 @@
 import { PageHero } from "@/components/page/PageHero";
 import { CtaBand } from "@/components/page/CtaBand";
-import { Pending, SectionHeading } from "@/components/ui/editorial";
+import { SectionHeading } from "@/components/ui/editorial";
 import Link from "next/link";
 import { getStories } from "@/lib/content";
 import { photos } from "@/content/photos";
@@ -19,7 +19,7 @@ export default async function StoriesPage() {
   const stories = await getStories();
   const published = stories.some((s) => s.status === "published");
   const [lead, ...rest] = stories;
-  const label = (s: (typeof stories)[number]) => `${s.category} · ${s.status === "published" ? (s.publishedAt ?? "") : "Planned"}`;
+  const label = (s: (typeof stories)[number]) => s.status === "published" && s.publishedAt ? `${s.category} · ${s.publishedAt}` : s.category;
   const title = (s: (typeof stories)[number], cls: string) =>
     s.status === "published" ? (
       <Link href={`/stories/${s.slug}`} className={`${cls} underline decoration-brand-500/0 underline-offset-4 transition-colors hover:decoration-brand-500`}>
@@ -39,17 +39,12 @@ export default async function StoriesPage() {
             Notes from <em>the trail</em>
           </>
         }
-        intro="Practical guides for planning a trek, and — with their permission — accounts from travelers who have walked these paths."
+        intro="Practical guidance on altitude, permits, seasons and preparation for trekking in Nepal."
       />
 
       <section aria-labelledby="list-title" className="bg-cloud-100 py-24 md:py-36">
         <div className="container-x">
-          <SectionHeading eyebrow={published ? "Latest" : "In preparation"} id="list-title" title={published ? "Stories & guides" : "Coming soon"} />
-          {!published && (
-            <div className="mt-10 max-w-xl">
-              <Pending>No articles are published yet. Traveler stories will appear only with the traveler&rsquo;s consent.</Pending>
-            </div>
-          )}
+          <SectionHeading eyebrow={published ? "Latest" : "Guides"} id="list-title" title={published ? "Stories & guides" : "Planning topics"} />
 
           <article className="reveal mt-20 grid gap-8 border-t border-ink-900/15 pt-10 md:grid-cols-[1fr_1.4fr] md:gap-20">
             <p className="eyebrow text-brand-500">{label(lead)}</p>
@@ -71,7 +66,7 @@ export default async function StoriesPage() {
         </div>
       </section>
 
-      <CtaBand photo={photos.namche} title="Have a question before you go?" text="Until the guides are published, ask us directly about seasons, permits or preparation." />
+      <CtaBand photo={photos.namche} title="Have a question before you go?" text="Seasons, permits, altitude or preparation: share your questions when you plan your trip." />
     </>
   );
 }

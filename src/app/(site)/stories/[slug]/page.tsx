@@ -63,7 +63,6 @@ export default async function StoryPage({ params }: PageProps<"/stories/[slug]">
           <div className="relative aspect-[16/9] overflow-hidden bg-night-900">
             <Image src={s.photo.src} alt={s.photo.alt} fill preload sizes="100vw" className="object-cover" />
           </div>
-          <figcaption className="mt-2 text-xs text-ink-500">Pictured: {s.photo.location}</figcaption>
         </figure>
       )}
       <div className="container-x mt-14 max-w-3xl">

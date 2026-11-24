@@ -147,7 +147,7 @@ export type Story<P = PhotoKey> = {
   seo?: Seo;
 };
 
-/** Company settings. Every field is optional; pages show "to be supplied" for blanks. */
+/** Company settings. Every field is optional; pages omit blanks. */
 export type SiteSettings = {
   name: string;
   description: string;

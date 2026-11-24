@@ -20,15 +20,8 @@ export function TrekCard({ trek, sizes, ratio = "aspect-[4/5]", light, index, fe
     <>
       <div className={`relative ${ratio} overflow-hidden bg-night-900`}>
         <Image src={photo.src} alt={photo.alt} fill sizes={sizes} placeholder="blur" className="object-cover transition-transform duration-1000 ease-cinematic group-hover:scale-[1.04]" />
-        <span
-          className={`absolute top-3 left-3 px-2.5 py-1 text-[11px] font-semibold tracking-[0.2em] uppercase ${
-            href ? "bg-brand-500 text-cloud-50" : "bg-night-950/80 text-cloud-100"
-          }`}
-        >
-          {href ? "Route guide" : "Guide in preparation"}
-        </span>
+        {href && <span className="absolute top-3 left-3 bg-brand-500 px-2.5 py-1 text-[11px] font-semibold tracking-[0.2em] text-cloud-50 uppercase">Route guide</span>}
       </div>
-      <p className={`mt-2 text-xs ${light ? "text-cloud-100/70" : "text-ink-500"}`}>Pictured: {photo.location}</p>
     </>
   );
   const text = (
