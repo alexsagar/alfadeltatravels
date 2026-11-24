@@ -51,66 +51,68 @@ Manage → Members. Editors sign in with their own Sanity account; the
 website stores no Sanity tokens.
 
 ## 5. Publishing → live site (rebuild on publish)
-The site is prerendered at build time and makes no runtime CMS requests.
-To make published changes go live automatically:
-1. In the host (Cloudflare Pages / Workers Builds) create a **deploy hook**.
-2. In Sanity Manage → API → Webhooks add a webhook: trigger on create /
-   update / delete, filter `_type in ["trek","tour","destination","story","siteSettings"]`,
-   **drafts off** (published documents only), URL = the deploy hook.
-3. Each publish then rebuilds the site (a few minutes). The build fetches
-   content and the slug manifest from the same dataset in one step, so new
-   pages, listings, sitemap and Proxy 404 rules always agree.
+The site is prerendered at build time and makes no runtime CMS requests, so
+**a published change appears after the next build**. Rebuild-on-publish is
+the chosen mechanism (simplest; routes, the 404 manifest, sitemap and pages
+always change together):
+1. In Vercel (project settings → Git → Deploy Hooks) create a deploy hook for
+   the review branch.
+2. In Sanity Manage → API → Webhooks add a webhook on the `development`
+   dataset: trigger on create / update / delete, **drafts off** (published
+   documents only), URL = the deploy hook.
+3. Each publish then rebuilds the site (a few minutes).
 
-## 6. First content
-Follow the internal content checklist (docs/internal/, not in the repository). Start with **Company & contact**.
-Migrating the existing local content is described in ARCHITECTURE.md →
-"Content migration".
+Do not create the webhook or the Vercel project without approval.
+
+## 6. Editing content (Milestone 9.5.1: Sanity is the only source)
+1. Open `/studio` (locally `http://localhost:3000/studio`) and sign in.
+2. Pick the document: **Company & contact**, **Homepage**, **Treks**,
+   **Experience categories**, **Experiences**, **Tour themes**, **Tours**,
+   **Destinations** or **Stories & guides**.
+3. Edit. Changes are saved as a draft that the website never shows.
+4. Press **Publish**. The website shows the change after the next build
+   (automatic once the webhook exists; locally run `npm run build`).
+5. Check the page. To undo, open the document's history in Studio and
+   restore the previous version, then publish again.
+
+**Replacing a photograph:** open the document, click the photo field, upload
+or choose another image, and fill in alt text, location, licence,
+photographer and source link (required for anything not owned by the
+company). Publish. `/image-credits` updates with the next build.
+
+**Rules that still apply**
+- Required: the Homepage text fields and photos, and the company name and
+  description. If one is missing, the build fails and names the field, so a
+  broken page is never published.
+- Optional fields that are empty are simply not shown (for example contact
+  details). Never type placeholder text into them.
+- Pages are indexed by search engines only when "Show in search engines" is
+  ticked; the client-review site stays noindex regardless (no
+  `NEXT_PUBLIC_SITE_URL` ⇒ robots.txt blocks all crawling).
+- Company packages appear only when marked "Confirmed".
+
+**Stays in code by design:** layout, interface labels and buttons,
+animation, the logo, the cinematic hero headline and its photographs.
+
+## 7. Vercel client-review site (prepared, not deployed)
+Environment variables (all public, no tokens):
+
+```
+NEXT_PUBLIC_SANITY_PROJECT_ID=4qnp14bk
+NEXT_PUBLIC_SANITY_DATASET=development
+# leave NEXT_PUBLIC_SITE_URL unset: canonicals stay on localhost and robots.txt disallows everything
+```
+
+- Build command `npm run build` (runs the content manifest first). No
+  `SANITY_ALLOW_PRODUCTION_READ`; the site can never read `production`.
+- Add the review domain to Sanity CORS origins (with credentials) so `/studio`
+  works there.
+- Verify a change: publish in Studio → wait for the deploy → reload the page.
 
 ## Notes
-- Builds fail if Sanity is configured but unreachable — deliberately, so a
-  network problem can never publish an empty site.
-- `npx sanity schema deploy` / `npx sanity dataset export` use `sanity.cli.ts`
-  with the same environment variables.
-
-## Milestone 9.3: Sanity-first content
-
-**Editable in Studio (development, drafts)**
-- Homepage (singleton): hero eyebrow and subline, featured treks, Experiences and Tours copy, closing CTA and photos.
-- Experience categories (6) and Experiences (25). Fill in an experience's "Detail page" group to give it its own page.
-- Destinations and Treks (existing drafts).
-- Company & contact. A footer tagline field was added.
-
-**Stays in code by design**
-- Layout, section order and animation (GSAP, Lottie, clouds).
-- The logo, favicon and UI icons.
-- The cinematic hero headline and photo sequence.
-
-**Migration (repeatable, development only)**
-```
-npx sanity exec scripts/m93-migrate-experiences.mts --with-user-token -- --dataset=development            # dry run
-npx sanity exec scripts/m93-migrate-experiences.mts --with-user-token -- --dataset=development --execute  # create drafts
-```
-- It refuses to run if any planned id already exists, so it never overwrites drafts.
-- Image assets are content-addressed and reused.
-
-**Editorial preview (local, drafts)**
-1. Export the drafts. The Sanity CLI token stays in these scripts; the app never holds a token:
-   ```
-   npx sanity exec scripts/export-draft-preview.mts --with-user-token
-   node --no-warnings --env-file=.env.local scripts/export-trek-preview-fixtures.mts
-   node --no-warnings --env-file=.env.local scripts/export-destination-audit-fixtures.mts
-   ```
-2. Run `npm run dev` and open:
-   - `/preview-home`
-   - `/preview/experiences`
-   - `/preview/experience?slug=paragliding`
-   - `/preview/trek?slug=…`
-   - `/preview/destination?slug=…`
-3. These routes are `.dev.tsx` pages: they do not exist in production builds (they return 404) and they are marked noindex.
-
-**Switching the public site to Sanity**
-
-- Treks, destinations, experiences and the homepage use local content until they are opted in with `SANITY_CUTOVER` (for example `SANITY_CUTOVER=experiences,home`). Tours, stories and settings exist only in Sanity and are not gated.
-- Opt a type in only after **all** of its documents are published, then rebuild. The manifest, sitemap and pages switch together, so publishing a few documents can never replace a complete local set with an incomplete one.
-- An unknown type name fails the build loudly.
-- Indexing still needs `seo.index` on each document.
+- Builds fail if Sanity is unreachable or required content is missing —
+  deliberately, so a network problem can never publish an empty site.
+- `npx sanity dataset export development <file>` makes a backup (keep it out
+  of Git, e.g. under `review/`).
+- Document ids must not contain "." (dotted ids are private in Sanity and
+  invisible to the website). Studio-created documents are fine.

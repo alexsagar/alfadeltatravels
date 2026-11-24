@@ -18,9 +18,9 @@ export function HomeView({ home, categories }: { home: HomeContent<Photo>; categ
         <BirdJourney eyebrow={home.heroEyebrow} subline={home.heroSubline} />
         <FeaturedTreks intro={home.treksIntro} treks={home.featuredTreks} />
         <BeyondMountains title={home.beyondTitle} intro={home.beyondIntro} photo={home.beyondPhoto} categories={categories} />
-        <Tours title={home.toursTitle} intro={home.toursIntro} />
+        <Tours title={home.toursTitle} intro={home.toursIntro} cards={home.tourCards} />
         <PhotoBridge photo={photos.viewpoint} className="bg-night-900" />
-        <Destinations />
+        <Destinations regions={home.regions} />
         <About />
         <Stories />
         <PlanCta title={home.closingTitle} text={home.closingText} photo={home.closingPhoto} />

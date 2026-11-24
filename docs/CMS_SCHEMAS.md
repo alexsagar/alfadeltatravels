@@ -30,12 +30,12 @@ queries returning the same shapes.
   `itinerary[]` (`itineraryDay`: day, title, text, overnight, elevationM),
   `inclusions[]`, `exclusions[]`, `price` (optional, with currency and basis),
   `departures[]` (optional), `approvedBy`, `approvedAt`.
-  Pages render the "Awaiting company" notice while `offering` is empty.
+  While `offering` is empty, pages show a short "Plan this trip" prompt.
 
 **`tour`** — `title`, `slug`, `theme` (ref → tourTheme), `destinations[]`
 (refs), `photo`, `summary`, `offering` (same shape as trek offering), `seo`.
 
-**`tourTheme`** — `title`, `slug`, `photo`, `text`, `places[]` (refs).
+**`tourTheme`** — `title`, `slug`, `order`, `text`, `photo`, `places[]` (weak refs → destination). The "ways to travel" on /tours.
 
 **`destination`** — `title`, `slug`, `kind` (region | place), `photo`,
 `summary`, `body` (portable text), `gallery[]`, `seo`. Treks link back via
@@ -46,9 +46,11 @@ their `region` reference.
 (planned | published), `consent` (required true for Journal), `related[]`
 (refs to treks/destinations), `seo`.
 
-**`siteSettings`** (singleton) — company name, contact details (email,
-phone, address, hours), registration and memberships, social links. Every
-field optional; the Contact and About pages show "To be supplied" for blanks.
+**`siteSettings`** (singleton) — company name and description (required), footer tagline, contact details (email, phone, WhatsApp, address, hours), registration and memberships, social links, about (story, approach), team (consent required). Optional fields left blank are not shown.
+
+**`homePage`** (singleton) — hero eyebrow and subline, featured treks intro, `featuredTreks[]` (trek ref + optional card title and photo), Experiences and Tours section copy, `tourCards[]` (title, theme, photo), `regions[]` (title, note, photo; first shown large), closing CTA title, text and photo. All text and the two section photos are required.
+
+**`experience`** detail pages: `guide.destinations[]` lists the places shown on the page (separate from the catalogue `destinations[]`).
 
 ## Rules enforced in schema validation
 - `photo.location` and `photo.alt` required.

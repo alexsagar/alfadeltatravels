@@ -1,6 +1,7 @@
 import type { Metadata, Viewport } from "next";
 import { DM_Sans, Manrope } from "next/font/google";
 import { site } from "@/content/site";
+import { getSettings } from "@/lib/content";
 import "./globals.css";
 
 // Milestone 9.1: Manrope for display, headings and navigation; DM Sans for
@@ -18,12 +19,15 @@ const dmSans = DM_Sans({
   display: "swap",
 });
 
-export const metadata: Metadata = {
-  metadataBase: new URL(site.url),
-  title: { default: `${site.name} — Treks, Adventures & Journeys in Nepal`, template: `%s · ${site.name}` },
-  description: site.description,
-  openGraph: { type: "website", siteName: site.name, title: site.name, description: site.description },
-};
+export async function generateMetadata(): Promise<Metadata> {
+  const { name, description } = await getSettings();
+  return {
+    metadataBase: new URL(site.url),
+    title: { default: `${name} — Treks, Adventures & Journeys in Nepal`, template: `%s · ${name}` },
+    description,
+    openGraph: { type: "website", siteName: name, title: name, description },
+  };
+}
 
 export const viewport: Viewport = { themeColor: "#141c25" };
 

@@ -5,7 +5,7 @@
 import assert from "node:assert/strict";
 import { groupProblems, validateSchema } from "@sanity/schema/_internal";
 import { schemaTypes } from "./schemaTypes/index.ts";
-import { mapDestination, mapExperienceCategory, mapExperienceGuide, mapHome, mapOffering, mapPhoto, mapSeo, mapSettings, mapStory, mapTrek } from "./map.ts";
+import { MissingContentError, mapDestination, mapExperienceCategory, mapExperienceGuide, mapHome, mapOffering, mapPhoto, mapSeo, mapSettings, mapStory, mapTourTheme, mapTrek } from "./map.ts";
 import { manifestQuery, settingsQuery, storiesQuery, toursQuery, treksQuery, destinationsQuery } from "./queries.ts";
 
 // 1. Schemas compile with no errors (warnings allowed) — the same check Studio runs.
@@ -52,7 +52,9 @@ assert.equal(mapTrek({ ...trek, photo: null }), null);
 
 // 7. Stories without body are not pages; settings never invent details.
 assert.equal(mapStory({ slug: "a", title: "A", body: [] }), null);
-const blank = mapSettings(null, { name: "Alfa Delta Travels", description: "d" });
+assert.throws(() => mapSettings(null), MissingContentError, "missing settings fail the build, no fallback");
+assert.throws(() => mapSettings({ name: "Alfa Delta Travels", description: "  " }), MissingContentError);
+const blank = mapSettings({ name: "Alfa Delta Travels", description: "d" });
 assert.equal(blank.contact.email, undefined);
 assert.deepEqual(blank.team, []);
 
@@ -69,10 +71,18 @@ const guide = mapExperienceGuide(guideRaw)!;
 assert.equal(guide.seo.index, false, "experience pages are noindex unless explicitly approved");
 assert.deepEqual(guide.related, ["q"]);
 assert.equal(mapExperienceGuide({ ...guideRaw, guide: { ...guideRaw.guide, sources: [] } }), null, "a page needs sources");
-// Homepage: blank CMS fields keep the local copy; no CMS document = local.
-const localHomeContent = { heroEyebrow: "E", heroSubline: "S", treksIntro: "T", featuredTreks: [], beyondTitle: "B", beyondIntro: "I", beyondPhoto: mapPhoto(img)!, toursTitle: "TT", toursIntro: "TI", closingTitle: "C", closingText: "CT", closingPhoto: mapPhoto(img)! };
-assert.equal(mapHome(null, localHomeContent), localHomeContent);
-const h = mapHome({ heroEyebrow: "New", heroSubline: "  ", featuredTreks: [{ slug: "t", title: "T", photo: img, hasGuide: false }] }, localHomeContent);
-assert.deepEqual([h.heroEyebrow, h.heroSubline, h.featuredTreks[0].href], ["New", "S", undefined]);
+// Homepage: CMS only. Missing document or required text fails loudly (no local fallback).
+const homeRaw = { heroEyebrow: "E", heroSubline: "S", treksIntro: "T", beyondTitle: "B", beyondIntro: "I", beyondPhoto: img, toursTitle: "TT", toursIntro: "TI", closingTitle: "C", closingText: "CT", closingPhoto: img,
+  featuredTreks: [{ card: { title: "Card", photo: null }, trek: { slug: "t", title: "T Trek", photo: img, hasGuide: true } }, { card: {}, trek: null }],
+  tourCards: [{ title: "Pokhara", theme: "Lakes", photo: img }, { title: "No photo", theme: "x", photo: null }], regions: [] };
+assert.throws(() => mapHome(null), MissingContentError);
+assert.throws(() => mapHome({ ...homeRaw, heroSubline: "  " }), /heroSubline/);
+assert.throws(() => mapHome({ ...homeRaw, closingPhoto: null }), /closingPhoto/);
+const h = mapHome(homeRaw);
+assert.deepEqual([h.featuredTreks.length, h.featuredTreks[0].title, h.featuredTreks[0].href, h.featuredTreks[0].photo.alt], [1, "Card", "/treks/t", img.alt], "card title overrides; trek photo is the default; unpublished trek dropped");
+assert.deepEqual([h.tourCards.map((c) => c.title), h.regions], [["Pokhara"], []], "cards without a photo are omitted");
+// Tour themes.
+assert.deepEqual(mapTourTheme({ slug: "w", title: "W", text: "t", photo: img, places: ["chitwan", null] })!.places, ["chitwan"]);
+assert.equal(mapTourTheme({ slug: "w", title: "W", text: "", photo: img }), null);
 
 console.log("map.test: ok");

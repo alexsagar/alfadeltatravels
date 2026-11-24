@@ -83,14 +83,20 @@ scripts/content-manifest.mts       prebuild: writes src/generated/content-manife
 src/app/studio/[[...tool]]         embedded Studio (noindex, robots-disallowed)
 ```
 
-- **Source selection:** Sanity when `NEXT_PUBLIC_SANITY_PROJECT_ID` is set,
-  otherwise local `src/content/*` (documented dev fallback). Per type, an
-  empty CMS falls back to local content, so pages never go blank. Tour
-  packages and story articles exist only in the CMS (nothing invented locally).
-- **Types:** `src/content/types.ts` is generic over the image type — local
-  files hold `PhotoKey` strings, pages receive resolved `Photo` objects
-  (StaticImageData-shaped, so `next/image` works for both static files and
-  `cdn.sanity.io`).
+- **Source:** Sanity only (Milestone 9.5.1). `NEXT_PUBLIC_SANITY_PROJECT_ID`
+  and `NEXT_PUBLIC_SANITY_DATASET` are required; `src/sanity/env.ts` fails the
+  build without them. There is no local editorial fallback and no
+  cross-dataset fallback: missing required content (homepage, company
+  settings) throws `MissingContentError` at build; optional fields are
+  omitted; empty collections (tours, stories) render their section's empty
+  state. `src/content/` keeps only technical modules: `site.ts` (brand name,
+  origin, routes), `types.ts`, and `photos.ts` + `photo-credits.ts` for the
+  bundled scene photos used by page heroes and the cinematic sequence.
+- **Document ids** must not contain "." — Sanity treats dotted ids as private
+  sub-paths, invisible to the site's anonymous published reads.
+- **Types:** `src/content/types.ts` is generic over the image type; pages
+  receive resolved `Photo` objects (StaticImageData-shaped, so `next/image`
+  works for both bundled files and `cdn.sanity.io`).
 - **Publication safety:** client uses the `published` perspective, queries
   also exclude `drafts.**`, packages (`offering`) render only when
   "Confirmed", journals need consent, team members need consent, indexing
@@ -110,30 +116,11 @@ src/app/studio/[[...tool]]         embedded Studio (noindex, robots-disallowed)
   is valid exactly when its page exists. No network calls in Proxy.
 - **Empty dynamic routes:** Cache Components requires ≥1 prerendered param,
   so `lib/params.ts` prerenders a `__none` sentinel that resolves to 404.
-- **Preview:** not implemented. When needed: Next draft mode enabled via
+- **Preview:** editors preview drafts in Studio. For in-site preview later: Next draft mode enabled via
   `next-sanity/draft-mode` with a server-only `SANITY_API_READ_TOKEN`, a
   separate draft-perspective client used only when draft mode is on, and
   `noindex` on previewed responses. Nothing in the current bundle reads drafts.
 
-### Content migration (local → Sanity) — plan, not yet run
-Target: **`development` only**, via a script that calls
-`assertWritableDataset("development")` (explicit `--dataset`), creating
-documents as **drafts** (`drafts.` ids) so nothing is published by the
-migration itself. Editors review in Studio and publish individually.
-1. **Destinations + photos:** 3 regions and 4 places from `places.ts`; upload
-   each image once with alt / location / photographer / licence / source from
-   `photos.ts` (must match ASSET_LICENSES.md). Draft.
-2. **Everest Base Camp guide:** all guide fields 1:1 from `treks.ts`, region
-   reference → Khumbu, `offering.confirmed = false`, `seo.index = false`
-   until reviewed. Draft.
-3. **ABC, Langtang, Mardi Himal:** card fields only (title, region, photo,
-   summary, high point), no guide, no package. Draft.
-4. **Tours:** none migrated — none exist. Created by the company later.
-5. **Company & contact:** not migrated — no verified data. Filled by the
-   company in Studio.
-Idempotent (fixed `_id`s, `createIfNotExists`), dry-run mode printing the
-plan first, no deletes. Promotion to `production` is a separate, explicitly
-authorised milestone (export from `development` → review → import).
 
 ### Transitions on internal pages
 `ScrollFx` (mounted by the (site) layout) wires `data-fx="parallax | window |
@@ -219,6 +206,8 @@ Reduced motion: trekker stays hidden, parallax off.
 
 ## Experiences (Milestone 9)
 
+_History. Since Milestone 9.5.1 all of this content lives in Sanity; see "Sanity-only content" below._
+
 - **Route:** `/experiences` (single catalogue page, indexable per `lib/seo.ts`). No `[slug]` detail route yet, so `/experiences/<x>` is a plain 404 and needs no Proxy entry. When detail pages are added: create `experiences/[slug]`, add the slugs to `scripts/content-manifest.mts` and `src/proxy.ts`, and list only `seo.index` pages in `sitemap.ts`.
 - **Content source:** `src/content/experiences.ts` (local, documented), read through `getExperienceCategories()` in `lib/content.ts`. Six categories, each with activities; every activity carries hand-set `places` (destination slugs), checked by `src/content/experiences.test.mts`. Place links go to in-page anchors on `/destinations`, never to draft-only destination pages.
 - **CMS:** `experience` document type in `schemaTypes/documents.ts` (category, summary, body, destinations as weak references, bestTime, preparation, safety, FAQs, sources, photo, gallery, featured + homeOrder, seo). Not queried yet; no documents created. Kept separate from `tour` because Tour carries the commercial `offering`.
@@ -231,20 +220,34 @@ Reduced motion: trekker stays hidden, parallax off.
 - **Catalogue links:** an activity links to a detail page only through its explicit `guide` field.
 - **Future CMS migration** (not run): one `experience` draft per guide in `development` via a script using `assertWritableDataset("development")` and fixed `drafts.experience-<slug>` ids. Mapping: `summary` = intro, `body` = overview + story (Portable Text), `bestTime`, `preparation`, `safety`, `faqs`, `sources`, `photo` = hero, `gallery` = story photos, `destinations` = weak refs, `seo` (index false). Then add `getExperienceGuides()` CMS reading with the same per-type local fallback as treks, and include CMS slugs in the manifest. The 21 remaining catalogue activities would migrate as card-only documents (no detail page) when needed.
 
-## Sanity-first content (Milestone 9.3)
+## Sanity-only content (Milestone 9.5.1)
 
-| Content | Local source (fallback) | Sanity | Reader |
-|---|---|---|---|
-| Homepage copy and picks | `content/home.ts` | `homePage` singleton | `getHome()`; blank CMS fields keep local copy |
-| Experience categories and catalogue | `content/experiences.ts` | `experienceCategory`, `experience` | `getExperienceCategories()` |
-| Experience detail pages | `content/experience-guides.ts` | `experience.guide` | `getExperienceGuides()` |
-| Treks, destinations, tours, stories, settings | `content/*` | existing types | unchanged |
-| Photos | `src/assets/scenes` + `photo-credits.ts` | all 30 uploaded to `development` (content-addressed ids) | `mapPhoto` → Sanity CDN `?auto=format&w=2400`, resized by next/image |
+| Content | Sanity | Reader |
+|---|---|---|
+| Homepage copy, featured trek cards, Tours and Destinations section cards, photos | `homePage` singleton | `getHome()` |
+| Company name, description, footer tagline, contact, about, team | `siteSettings` singleton | `getSettings()` |
+| Treks and route guides | `trek` | `getTreks()` |
+| Destinations | `destination` | `getDestinations()` |
+| Tour themes (/tours) | `tourTheme` | `getTourThemes()` |
+| Experience categories, activities, detail pages | `experienceCategory`, `experience` | `getExperienceCategories()`, `getExperienceGuides()` |
+| Tour packages, stories | `tour`, `story` | `getTours()`, `getStories()` (none published) |
 
-- **One mapping path:** every reader runs a pure `resolve*` / `map*` step (`lib/content.ts`, `sanity/map.ts`, unit-tested). Public pages give it published data at build time; the dev draft preview gives it exported draft fixtures. Preview and live therefore render identically.
-- **Source switch:** per type, by explicit opt-in only: `SANITY_CUTOVER` (`src/sanity/cutover.ts`, tested). A listed type with published documents uses Sanity, and so does the matching manifest entry. There is no cross-dataset fallback; `guard.ts` still forbids reading production during development.
-- **Drafts:** never read by public routes. The public client uses the `published` perspective, and queries also exclude `drafts.**`. Drafts reach the app only through gitignored fixtures exported by CLI scripts, so no token ever reaches the app. Verified by `tools/m93-audit.mjs`: 0 occurrences of the token in `.next`, `src` or `public`.
-- **Cutover blockers:** content approval and publishing; repointing tours and destination detail pages; a decision on keeping local images for the cinematic sequence (hero, journey scenes, PhotoBridge, closing panorama stay local by design).
+- **Stays in code by design:** layout, section order, interface labels
+  (eyebrows, navigation, CTA buttons), animation, the logo, the cinematic hero
+  headline and its photo sequence, and the bundled page-hero photos
+  (`photos.ts`). `/image-credits` lists bundled and CMS photos together,
+  de-duplicated by source.
+- **Freshness:** readers fetch with `cache: "no-store"` (Next's persistent
+  fetch cache survives rebuilds) from the live API (`useCdn: false`; the API
+  CDN can lag a fresh publish). Caching is decided once per build by
+  `"use cache"`.
+- **Dev draft preview removed:** with everything published, editors review
+  drafts in Studio. The `.dev.tsx` preview routes and fixture exporters are
+  gone, as is `SANITY_CUTOVER`.
+- **Migration scripts (development only, guarded, revision-checked):**
+  `scripts/m951-publish-development.mts`, `scripts/m951-public-ids.mts`,
+  `scripts/m951-guide-destinations.mts`. Kept as a record; re-running aborts
+  because the starting state no longer matches.
 
 ## Branches, CI and promotion
 
@@ -259,7 +262,7 @@ Reduced motion: trekker stays hidden, parallax off.
 **How CI works**
 - `.github/workflows/ci.yml` runs on every push and pull request to these branches: `npm ci`, lint, `next typegen`, typecheck, unit tests, then the production build.
 - It uses Node 22, read-only permissions and no secrets.
-- With no Sanity project id set, the build uses local content.
+- The build reads published documents from the public Sanity `development` dataset anonymously (project id and dataset set in `ci.yml`; no token). If Sanity is unreachable or required content is missing, the build fails with a clear message.
 - Once the CI check is required, a failed check blocks merging into `staging` and `main`.
 
 **What CI does not do**
