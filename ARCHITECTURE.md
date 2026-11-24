@@ -245,3 +245,23 @@ Reduced motion: trekker stays hidden, parallax off.
 - **Source switch:** per type, by explicit opt-in only: `SANITY_CUTOVER` (`src/sanity/cutover.ts`, tested). A listed type with published documents uses Sanity, and so does the matching manifest entry. There is no cross-dataset fallback; `guard.ts` still forbids reading production during development.
 - **Drafts:** never read by public routes. The public client uses the `published` perspective, and queries also exclude `drafts.**`. Drafts reach the app only through gitignored fixtures exported by CLI scripts, so no token ever reaches the app. Verified by `tools/m93-audit.mjs`: 0 occurrences of the token in `.next`, `src` or `public`.
 - **Cutover blockers:** content approval and publishing; repointing tours and destination detail pages; a decision on keeping local images for the cinematic sequence (hero, journey scenes, PhotoBridge, closing panorama stay local by design).
+
+## Branches, CI and promotion
+
+| Branch | Purpose |
+|---|---|
+| `dev` | Active development; feature branches merge here. Direct commits allowed (no force-push or deletion). |
+| `staging` | Changes promoted from `dev` for integration testing and review. Pull requests only. |
+| `main` | Approved releases only. Pull requests from `staging` only. |
+
+**Promotion path:** feature branch, then `dev`, then `staging`, then `main`, each step through a pull request. Before each merge, check the changed files, the CI result, assets, secrets and any UI changes.
+
+**How CI works**
+- `.github/workflows/ci.yml` runs on every push and pull request to these branches: `npm ci`, lint, `next typegen`, typecheck, unit tests, then the production build.
+- It uses Node 22, read-only permissions and no secrets.
+- With no Sanity project id set, the build uses local content.
+- Once the CI check is required, a failed check blocks merging into `staging` and `main`.
+
+**What CI does not do**
+- Deployment (Vercel) is a separate, future step.
+- Publishing content in Sanity and deploying the application are separate operations.
