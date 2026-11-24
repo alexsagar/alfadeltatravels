@@ -34,7 +34,7 @@ export const storiesQuery = `*[_type == "story" && ${published} && (category != 
 }`;
 
 export const settingsQuery = `*[_id == "siteSettings"][0] {
-  name, description, contact, enquiryEmail, registration, memberships, social[]{ label, url }, "about": { "story": ${rich("about.story")}, "approach": ${rich("about.approach")} },
+  name, description, footerTagline, contact, enquiryEmail, registration, memberships, social[]{ label, url }, "about": { "story": ${rich("about.story")}, "approach": ${rich("about.approach")} },
   "team": team[consent == true]{ name, role, bio, photo ${photo} }
 }`;
 

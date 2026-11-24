@@ -151,6 +151,8 @@ export type Story<P = PhotoKey> = {
 export type SiteSettings = {
   name: string;
   description: string;
+  /** Optional footer line from Sanity (Company & contact → Footer tagline). */
+  footerTagline?: string;
   contact: { email?: string; phone?: string; whatsapp?: string; address?: string; hours?: string };
   enquiryEmail?: string;
   registration?: string;
