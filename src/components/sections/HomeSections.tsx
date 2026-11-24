@@ -276,6 +276,7 @@ export function Stories() {
 export function PlanCta({ title, text, photo }: { title: string; text: string; photo: Photo }) {
   return (
     <section
+      data-page-cta
       aria-labelledby="plan-title"
       data-fx="curtain"
       className="relative z-0 -mt-[70svh] h-[170svh] bg-night-950 text-cloud-50 motion-reduce:mt-0 motion-reduce:h-auto"

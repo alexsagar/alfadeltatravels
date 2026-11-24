@@ -36,7 +36,7 @@ export default async function PlanPage() {
         position="object-[50%_60%]"
       />
 
-      <section aria-labelledby="form-title" className="bg-cloud-100 py-24 md:py-36">
+      <section data-page-cta aria-labelledby="form-title" className="bg-cloud-100 py-24 md:py-36">
         <div className="container-x grid gap-16 lg:grid-cols-[1fr_1.8fr] lg:gap-24">
           <div>
             <SectionHeading eyebrow="How it works" id="form-title" title="Start with a few details" />

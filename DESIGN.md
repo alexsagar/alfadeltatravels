@@ -99,3 +99,21 @@ No invented statistics, prices, durations or testimonials.
 - General guide vs company package: "About this guide" note, "general, not a
   company itinerary" eyebrow on the route, "Company package · Not yet
   confirmed" block.
+
+## Footer (Milestone 9.4)
+
+**Invitation band (charcoal)**
+- "Your Nepal story starts here." with the red Start planning button.
+- Shown only on pages without their own planning CTA. Page CTAs carry `data-page-cta` (CtaBand, the homepage closing panel and the planning form). A CSS `:has()` rule then hides the band, so two CTAs never follow each other. No JavaScript is involved.
+
+**Main footer (mist grey, so the transparent logo keeps its contrast)**
+- Logo and brand line. The line can be set in Sanity: Company & contact → Footer tagline.
+- Two link groups: Explore Nepal, and Alfa Delta Travels.
+- A planning block: one "Plan your journey" link.
+- Verified contact details and social links appear here only when they are published in Sanity. Until then nothing is shown: no placeholders and no `#` links.
+
+**Signature and legal line**
+- An oversized wordmark at 7% ink, decorative and `aria-hidden`. It is sized at 11.4vw so it never overflows, even at 320px.
+- Copyright, the CC attribution notice and Image credits.
+
+**Link hover:** an underline that draws in from the left (`.footer-link`). No transition under reduced motion.

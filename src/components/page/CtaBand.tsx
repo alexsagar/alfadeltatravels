@@ -13,7 +13,7 @@ import { planHref } from "@/content/site";
 /** `dark`: follows a dark section directly (the band continues it instead of opening a light gap). */
 export function CtaBand({ photo, title, text, query, dark }: { photo?: Photo; title: string; text: string; query?: string; dark?: boolean }) {
   return (
-    <section aria-labelledby="cta-title" className={dark ? "bg-night-950 pb-24 md:pb-32" : "bg-cloud-100 pb-24 md:pb-32"}>
+    <section data-page-cta aria-labelledby="cta-title" className={dark ? "bg-night-950 pb-24 md:pb-32" : "bg-cloud-100 pb-24 md:pb-32"}>
       <div className={`container-x grid overflow-hidden text-cloud-50 ${dark ? "bg-night-800" : "bg-night-950"} ${photo ? "md:grid-cols-[1.1fr_1fr]" : ""}`}>
         {photo && (
           <div data-fx="window" className="relative min-h-72 md:min-h-[520px]">
